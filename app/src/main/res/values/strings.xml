@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Todoc</string>
+
+    <string name="label_action_sort">Sort</string>
+
+    <string name="sort_alphabetical">A -&gt; Z</string>
+    <string name="sort_alphabetical_invert">Z -&gt; A</string>
+    <string name="sort_oldest_first">Oldest first</string>
+    <string name="sort_recent_first">Recent first</string>
+
+    <string name="add_task">Add a task</string>
+    <string name="add">Add</string>
+
+    <string name="no_task">You have no task to perform</string>
+
+    <string name="task_name_hint">Task name</string>
+    <string name="task_project_hint">Project name</string>
+
+    <string name="empty_task_name">The task name is required</string>
+</resources>
