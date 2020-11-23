@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -41,10 +42,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
 
+        // Init ViewModel
+        final TaskViewModel viewModel = new ViewModelProvider(
+            this,
+            new ViewModelProvider.AndroidViewModelFactory(getApplication())
+        ).get(TaskViewModel.class);
+
         // Init views
         noTaskLbl = findViewById(R.id.lbl_no_task);
-        initRecyclerView();
-        findViewById(R.id.fab_add_task).setOnClickListener(v -> initDialog());
+        initRecyclerView(viewModel);
+        findViewById(R.id.fab_add_task).setOnClickListener(v -> initDialog(viewModel));
+
+        // Observe LiveData updates
+        viewModel.getTaskList().observe(this, newTasks -> {
+            tasks.clear();
+            tasks.addAll(newTasks);
+            updateTasks();
+        });
     }
 
     @Override
@@ -71,15 +85,12 @@ public class MainActivity extends AppCompatActivity {
 
     // ------------------------------------- INIT VIEW METHODS -------------------------------------
 
-    private void initRecyclerView() {
-        taskAdapter = new TaskAdapter(tasks, task -> {
-            tasks.remove(task);
-            updateTasks();
-        });
+    private void initRecyclerView(@NonNull TaskViewModel viewModel) {
+        taskAdapter = new TaskAdapter(tasks, viewModel::removeTask);
         ((RecyclerView) findViewById(R.id.list_task)).setAdapter(taskAdapter);
     }
 
-    private void initDialog() {
+    private void initDialog(@NonNull TaskViewModel viewModel) {
         // Init and show dialog
         final AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.add_task)
@@ -103,26 +114,23 @@ public class MainActivity extends AppCompatActivity {
         // Config button listener
         // TIPS: call getButton() AFTER showing the dialog (otherwise getButton() returns null)
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(
-            positiveButton -> onPositiveButtonClicked(dialog, taskNameInput, taskNameLayout, projectNameInput)
+            positiveButton -> onPositiveButtonClicked(dialog, taskNameInput, taskNameLayout, projectNameInput, viewModel)
         );
     }
 
     private void onPositiveButtonClicked(AlertDialog dialog, TextInputEditText taskNameInput, TextInputLayout taskNameLayout,
-                                         AutoCompleteTextView projectNameInput) {
+                                         AutoCompleteTextView projectNameInput, @NonNull TaskViewModel viewModel) {
         final String taskName = taskNameInput.getText().toString();
         final Project selectedProject = Project.getProjectByName(projectNameInput.getText().toString());
         if (taskName.trim().isEmpty()) {
             taskNameLayout.setError(getString(R.string.empty_task_name));
         } else if (selectedProject != null) {
             final Task taskToAdd = new Task(
-                // TODO: Replace this by id of persisted task
-                (long) (Math.random() * 50000),
                 selectedProject.getId(),
                 taskName,
                 Instant.now().toEpochMilli()
             );
-            tasks.add(taskToAdd);
-            updateTasks();
+            viewModel.addTask(taskToAdd);
 
             dialog.dismiss();
         }

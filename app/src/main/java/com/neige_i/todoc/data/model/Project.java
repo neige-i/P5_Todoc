@@ -3,6 +3,8 @@ package com.neige_i.todoc.data.model;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Arrays;
 
@@ -11,10 +13,12 @@ import java.util.Arrays;
  *
  * @author Gaëtan HERFRAY
  */
+@Entity
 public class Project {
     /**
      * The unique identifier of the project
      */
+    @PrimaryKey
     private final long id;
 
     /**

@@ -4,6 +4,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -13,6 +18,7 @@ import java.util.Objects;
  *
  * @author Gaëtan HERFRAY
  */
+@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "project_id"))
 public class Task {
     public static final int SORT_NOT_SET = -1;
     public static final int SORT_BY_NAME = 0;
@@ -23,11 +29,13 @@ public class Task {
     /**
      * The unique identifier of the task
      */
+    @PrimaryKey(autoGenerate = true)
     private long id;
 
     /**
      * The unique identifier of the project associated to the task
      */
+    @ColumnInfo(name = "project_id", index = true)
     private long projectId;
 
     /**
@@ -41,6 +49,7 @@ public class Task {
     /**
      * The timestamp when the task has been created
      */
+    @ColumnInfo(name = "creation_timestamp")
     private long creationTimestamp;
 
     /**
@@ -56,6 +65,13 @@ public class Task {
         this.setProjectId(projectId);
         this.setName(name);
         this.setCreationTimestamp(creationTimestamp);
+    }
+
+    @Ignore
+    public Task(long projectId, @NonNull String name, long creationTimestamp) {
+        this.projectId = projectId;
+        this.name = name;
+        this.creationTimestamp = creationTimestamp;
     }
 
     /**
@@ -166,6 +182,8 @@ public class Task {
             return order == SORT_ASCENDING ? result : -result;
         };
     }
+
+    // TODO: Sort by name is case sensitive
 
     /**
      * Comparator to sort task from A to Z
