@@ -12,7 +12,6 @@ import com.neige_i.todoc.data.model.Task;
 
 import java.util.List;
 
-// ASKME: manage directories
 public class TaskRepository {
 
     private final TaskDao taskDao;
@@ -47,6 +46,10 @@ public class TaskRepository {
 
     public void deleteTask(long taskId) {
         TaskDatabase.databaseWriteExecutor.execute(() -> taskDao.delete(taskId));
+    }
+
+    public void deleteAllTasks() {
+        TaskDatabase.databaseWriteExecutor.execute(taskDao::clearAllTasks);
     }
 
     public LiveData<List<Project>> getProjects() {

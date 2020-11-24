@@ -6,8 +6,6 @@ import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Arrays;
-
 /**
  * <p>Models for project in which tasks are included.</p>
  *
@@ -52,7 +50,7 @@ public class Project {
      * @return all the projects of the application
      */
     @NonNull
-    public static Project[] getAllProjects() {
+    public static Project[] getAllProjects() { // TODO: remove method
         return new Project[]{
             new Project(1L, "Projet Tartampion", 0xFFEADAD1),
             new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
@@ -68,7 +66,7 @@ public class Project {
      * @return the project with the given unique identifier, or null if it has not been found
      */
     @Nullable
-    public static Project getProjectById(long id) {
+    public static Project getProjectById(long id) { // TODO: remove method
         for (Project project : getAllProjects()) {
             if (project.id == id)
                 return project;
@@ -105,12 +103,14 @@ public class Project {
         return color;
     }
 
-    @Nullable
-    public static Project getProjectByName(@NonNull String name) {
-        return Arrays.stream(getAllProjects())
-            .filter(project -> project.name.equals(name))
-            .findFirst()
-            .orElse(null);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Project project = (Project) o;
+        return id == project.id &&
+            color == project.color &&
+            name.equals(project.name);
     }
 
     @Override
