@@ -18,9 +18,18 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.neige_i.todoc.R;
 import com.neige_i.todoc.data.model.Project;
 
+import java.util.List;
+
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.NAME_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.NAME_DESC;
+
 public class MainActivity extends AppCompatActivity {
 
     private TaskViewModel viewModel;
+
+    private List<Project> allProjects;
 
     private TaskAdapter taskAdapter;
     private TextView noTaskLbl;
@@ -45,11 +54,15 @@ public class MainActivity extends AppCompatActivity {
             new ViewModelProvider.AndroidViewModelFactory(getApplication())
         ).get(TaskViewModel.class);
 
+        // Init data
+        viewModel.getProjectList().observe(this, projects -> allProjects = projects);
+
         // Init UI
         initUi();
 
         // Update Ui
         updateUi();
+        viewModel.getFakeLiveData().observe(this, aVoid -> {});
     }
 
     @Override
@@ -62,13 +75,21 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.filter_alphabetical || id == R.id.filter_alphabetical_inverted ||
-            id == R.id.filter_oldest_first || id == R.id.filter_recent_first
-        ) {
-            viewModel.setSortType(id);
+        if (id == R.id.filter_alphabetical) {
+            viewModel.setSortType(NAME_ASC);
             return true;
+        } else if (id == R.id.filter_alphabetical_inverted) {
+            viewModel.setSortType(NAME_DESC);
+            return true;
+        } else if (id == R.id.filter_oldest_first) {
+            viewModel.setSortType(DATE_ASC);
+            return true;
+        } else if (id == R.id.filter_recent_first) {
+            viewModel.setSortType(DATE_DESC);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     // ---------------------------------------- UI METHODS -----------------------------------------
@@ -90,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         // Show dialog
         dialog.show();
 
-        final Project[] allProjects = Project.getAllProjects();
+//        final Project[] allProjects = Project.getAllProjects();
 
         // Init views
         taskNameLayout = dialog.findViewById(R.id.layout_task_name);
@@ -101,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             android.R.layout.simple_list_item_1,
             allProjects
         ));
-        projectNameInput.setText(allProjects[0].toString(), false);
+        projectNameInput.setText(allProjects.get(0).toString(), false);
 
         // Config button listener
         // TIPS: call getButton() AFTER showing the dialog (otherwise getButton() returns null)
