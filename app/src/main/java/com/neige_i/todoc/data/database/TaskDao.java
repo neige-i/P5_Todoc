@@ -1,6 +1,5 @@
 package com.neige_i.todoc.data.database;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -17,10 +16,11 @@ public interface TaskDao {
     @Query("SELECT * FROM Task")
     LiveData<List<Task>> getAllTasks();
 
-    @Query("SELECT * FROM Task ORDER BY name ASC")
+    // TIPS: 'COLLATE NOCASE' removes case sensitivity
+    @Query("SELECT * FROM Task ORDER BY name COLLATE NOCASE ASC")
     LiveData<List<Task>> getTasksByNameAsc();
 
-    @Query("SELECT * FROM Task ORDER BY name DESC")
+    @Query("SELECT * FROM Task ORDER BY name COLLATE NOCASE DESC")
     LiveData<List<Task>> getTasksByNameDesc();
 
     @Query("SELECT * FROM Task ORDER BY creation_timestamp ASC")
@@ -44,6 +44,7 @@ public interface TaskDao {
     @Query("SELECT * FROM Project")
     LiveData<List<Project>> getAllProjects();
 
+    // ASKME: null value if no match
     @Query("SELECT * FROM Project WHERE id = :projectId")
     LiveData<Project> getProjectById(long projectId);
 

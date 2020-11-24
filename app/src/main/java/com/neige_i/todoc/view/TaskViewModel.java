@@ -76,6 +76,7 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void checkTask(@NonNull String taskName, @NonNull String projectName) {
+        // ASKME: asynchronous call
         fakeLiveData.addSource(taskRepository.getProjectByName(projectName), project -> {
             if (taskName.trim().isEmpty()) {
                 errorMessageEvent.setValue(R.string.empty_task_name);

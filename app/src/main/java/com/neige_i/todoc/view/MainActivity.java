@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             android.R.layout.simple_list_item_1,
             allProjects
         ));
+        taskNameInput.setText("");
         projectNameInput.setText(allProjects.get(0).toString(), false);
 
         // Config button listener

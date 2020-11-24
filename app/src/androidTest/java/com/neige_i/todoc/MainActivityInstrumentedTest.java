@@ -39,6 +39,7 @@ public class MainActivityInstrumentedTest {
 
     @Before
     public void setUp() {
+        // ASKME: use another DB
         // Clear all tasks before running UI tests
         rule.getScenario().onActivity(activity -> new TaskRepository(activity.getApplication()).deleteAllTasks());
     }
