@@ -2,7 +2,6 @@ package com.neige_i.todoc.data.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -20,8 +19,8 @@ public interface TaskDao {
     @Insert
     void insert(Task task);
 
-    @Delete
-    void delete(Task task);
+    @Query("DELETE FROM Task WHERE id = :taskId")
+    void delete(long taskId);
 
     @Insert
     void insert(Project project);
