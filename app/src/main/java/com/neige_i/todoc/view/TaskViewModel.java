@@ -79,9 +79,8 @@ public class TaskViewModel extends AndroidViewModel {
         orderBy.setValue(order_by);
     }
 
-    public void checkTask(@NonNull String taskName, @NonNull String projectName) {
-        // ASKME: asynchronous call
-        fakeLiveData.addSource(taskRepository.getProjectByName(projectName), project -> {
+    public void checkTask(@NonNull String taskName, long projectId) {
+        fakeLiveData.addSource(taskRepository.getProjectById(projectId), project -> {
             if (taskName.trim().isEmpty()) {
                 errorMessageEvent.setValue(R.string.empty_task_name);
             } else if (project != null) {

@@ -45,19 +45,12 @@ public interface TaskDao {
     @Query("DELETE FROM Task WHERE id = :taskId")
     void delete(long taskId);
 
-    @Query("DELETE FROM Task")
-    void clearAllTasks();
-
     @Insert
     void insert(Project project);
 
     @Query("SELECT * FROM Project")
     LiveData<List<Project>> getAllProjects();
 
-    // ASKME: null value if no match
     @Query("SELECT * FROM Project WHERE id = :projectId")
     LiveData<Project> getProjectById(long projectId);
-
-    @Query("SELECT * FROM Project WHERE name = :projectName")
-    LiveData<Project> getProjectByName(String projectName);
 }

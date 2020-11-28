@@ -2,7 +2,6 @@ package com.neige_i.todoc.data.repository;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.neige_i.todoc.data.database.TaskDao;
@@ -56,19 +55,11 @@ public class TaskRepository {
         TaskDatabase.databaseWriteExecutor.execute(() -> taskDao.delete(taskId));
     }
 
-    public void deleteAllTasks() {
-        TaskDatabase.databaseWriteExecutor.execute(taskDao::clearAllTasks);
-    }
-
     public LiveData<List<Project>> getProjects() {
         return taskDao.getAllProjects();
     }
 
     public LiveData<Project> getProjectById(long projectId) {
         return taskDao.getProjectById(projectId);
-    }
-
-    public LiveData<Project> getProjectByName(@NonNull String projectName) {
-        return taskDao.getProjectByName(projectName);
     }
 }

@@ -20,6 +20,7 @@ import static com.neige_i.todoc.util.LiveDataTestUtil.getValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 @RunWith(AndroidJUnit4.class)
 public class TaskDaoTest {
@@ -80,18 +81,6 @@ public class TaskDaoTest {
 
         // Then: the task list contains the 2 remaining ones
         assertThat(getValue(taskDao.getAllTasks()), is(Arrays.asList(task2, task4)));
-    }
-
-    @Test
-    public void clearTaskListTest() throws InterruptedException {
-        // Given: insert the tasks into the DB
-        insert5Tasks();
-
-        // When: delete all the tasks
-        taskDao.clearAllTasks();
-
-        // Then: the task list is empty
-        assertThat(getValue(taskDao.getAllTasks()), is(empty()));
     }
 
     @Test
@@ -158,13 +147,7 @@ public class TaskDaoTest {
         assertThat(getValue(taskDao.getProjectById(5)), is(project1));
         assertThat(getValue(taskDao.getProjectById(6)), is(project2));
         assertThat(getValue(taskDao.getProjectById(7)), is(project3));
-    }
-
-    @Test
-    public void getProjectByNameTest() throws InterruptedException {
-        assertThat(getValue(taskDao.getProjectByName("Projet Tartampion")), is(project1));
-        assertThat(getValue(taskDao.getProjectByName("Projet Lucidia")), is(project2));
-        assertThat(getValue(taskDao.getProjectByName("Projet Circus")), is(project3));
+        assertThat(getValue(taskDao.getProjectById(8)), nullValue());
     }
 
     private void insert5Tasks() {

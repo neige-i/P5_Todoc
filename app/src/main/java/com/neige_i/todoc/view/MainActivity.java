@@ -2,6 +2,7 @@ package com.neige_i.todoc.view;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 //        final Project[] allProjects = Project.getAllProjects();
 
         // Init views
+        final int[] adapterPosition = {0};
         taskNameLayout = dialog.findViewById(R.id.layout_task_name);
         taskNameInput = dialog.findViewById(R.id.input_task_name);
         projectNameInput = dialog.findViewById(R.id.input_project_name);
@@ -132,11 +134,12 @@ public class MainActivity extends AppCompatActivity {
         ));
         taskNameInput.setText("");
         projectNameInput.setText(allProjects.get(0).toString(), false);
+        projectNameInput.setOnItemClickListener((parent, view, position, id) -> adapterPosition[0] = position);
 
         // Config button listener
         // TIPS: call getButton() AFTER showing the dialog (otherwise getButton() returns null)
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(
-            v -> viewModel.checkTask(taskNameInput.getText().toString(), projectNameInput.getText().toString())
+            v -> viewModel.checkTask(taskNameInput.getText().toString(), allProjects.get(adapterPosition[0]).getId())
         );
     }
 
