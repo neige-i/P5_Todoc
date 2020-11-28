@@ -41,10 +41,14 @@ public class TaskViewModel extends AndroidViewModel {
     public LiveData<MainUiModel> getUiState() {
         return Transformations.map(Transformations.switchMap(orderBy, orderBy -> {
             switch (orderBy) {
-                case NAME_ASC:
+                case TASK_NAME_ASC:
                     return taskRepository.getTasksByNameAsc();
-                case NAME_DESC:
+                case TASK_NAME_DESC:
                     return taskRepository.getTasksByNameDesc();
+                case PROJECT_NAME_ASC:
+                    return taskRepository.getTasksByProjectNameAsc();
+                case PROJECT_NAME_DESC:
+                    return taskRepository.getTasksByProjectNameDesc();
                 case DATE_ASC:
                     return taskRepository.getTasksByDateAsc();
                 case DATE_DESC:
@@ -93,8 +97,10 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     enum ORDER_BY {
-        NAME_ASC,
-        NAME_DESC,
+        TASK_NAME_ASC,
+        TASK_NAME_DESC,
+        PROJECT_NAME_ASC,
+        PROJECT_NAME_DESC,
         DATE_ASC,
         DATE_DESC,
         NONE,

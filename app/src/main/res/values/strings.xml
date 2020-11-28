@@ -3,8 +3,10 @@
 
     <string name="label_action_sort">Sort</string>
 
-    <string name="sort_alphabetical">A -&gt; Z</string>
-    <string name="sort_alphabetical_invert">Z -&gt; A</string>
+    <string name="sort_alphabetical_task">A -&gt; Z (task)</string>
+    <string name="sort_alphabetical_invert_task">Z -&gt; A (task)</string>
+    <string name="sort_alphabetical_project">A -&gt; Z (project)</string>
+    <string name="sort_alphabetical_invert_project">Z -&gt; A (project)</string>
     <string name="sort_oldest_first">Oldest first</string>
     <string name="sort_recent_first">Recent first</string>
 

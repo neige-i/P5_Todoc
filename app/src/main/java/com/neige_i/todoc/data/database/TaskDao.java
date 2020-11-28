@@ -23,6 +23,16 @@ public interface TaskDao {
     @Query("SELECT * FROM Task ORDER BY name COLLATE NOCASE DESC")
     LiveData<List<Task>> getTasksByNameDesc();
 
+    @Query("SELECT Task.id, Task.project_id, Task.name, Task.creation_timestamp " +
+        "FROM Task INNER JOIN Project ON Task.project_id = Project.id " +
+        "ORDER BY Project.name COLLATE NOCASE ASC, Task.name COLLATE NOCASE ASC")
+    LiveData<List<Task>> getTasksByProjectNameAsc();
+
+    @Query("SELECT Task.id, Task.project_id, Task.name, Task.creation_timestamp " +
+        "FROM Task INNER JOIN Project ON Task.project_id = Project.id " +
+        "ORDER BY Project.name COLLATE NOCASE DESC, Task.name COLLATE NOCASE ASC")
+    LiveData<List<Task>> getTasksByProjectNameDesc();
+
     @Query("SELECT * FROM Task ORDER BY creation_timestamp ASC")
     LiveData<List<Task>> getTasksByDateAsc();
 

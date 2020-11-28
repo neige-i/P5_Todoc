@@ -22,8 +22,10 @@ import java.util.List;
 
 import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_ASC;
 import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.NAME_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.PROJECT_NAME_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.PROJECT_NAME_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.TASK_NAME_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.TASK_NAME_DESC;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,11 +77,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.filter_alphabetical) {
-            viewModel.setSortType(NAME_ASC);
+        if (id == R.id.filter_alphabetical_task) {
+            viewModel.setSortType(TASK_NAME_ASC);
             return true;
-        } else if (id == R.id.filter_alphabetical_inverted) {
-            viewModel.setSortType(NAME_DESC);
+        } else if (id == R.id.filter_alphabetical_inverted_task) {
+            viewModel.setSortType(TASK_NAME_DESC);
+            return true;
+        } else if (id == R.id.filter_alphabetical_project) {
+            viewModel.setSortType(PROJECT_NAME_ASC);
+            return true;
+        } else if (id == R.id.filter_alphabetical_inverted_project) {
+            viewModel.setSortType(PROJECT_NAME_DESC);
             return true;
         } else if (id == R.id.filter_oldest_first) {
             viewModel.setSortType(DATE_ASC);

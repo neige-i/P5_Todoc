@@ -85,7 +85,7 @@ public class MainActivityInstrumentedTest {
 
         // When: sort alphabetical
         onView(withId(R.id.action_filter)).perform(click());
-        onView(withText(R.string.sort_alphabetical)).perform(click());
+        onView(withText(R.string.sort_alphabetical_task)).perform(click());
 
         // Then: the list is sorted accordingly
         onView(withRecyclerView(R.id.list_task).atPositionOnView(0, R.id.lbl_task_name))
@@ -97,7 +97,7 @@ public class MainActivityInstrumentedTest {
 
         // When: sort alphabetical inverted
         onView(withId(R.id.action_filter)).perform(click());
-        onView(withText(R.string.sort_alphabetical_invert)).perform(click());
+        onView(withText(R.string.sort_alphabetical_invert_task)).perform(click());
 
         // Then: the list is sorted accordingly
         onView(withRecyclerView(R.id.list_task).atPositionOnView(0, R.id.lbl_task_name))

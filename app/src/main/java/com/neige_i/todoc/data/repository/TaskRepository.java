@@ -32,6 +32,14 @@ public class TaskRepository {
         return taskDao.getTasksByNameDesc();
     }
 
+    public LiveData<List<Task>> getTasksByProjectNameAsc() {
+        return taskDao.getTasksByProjectNameAsc();
+    }
+
+    public LiveData<List<Task>> getTasksByProjectNameDesc() {
+        return taskDao.getTasksByProjectNameDesc();
+    }
+
     public LiveData<List<Task>> getTasksByDateAsc() {
         return taskDao.getTasksByDateAsc();
     }

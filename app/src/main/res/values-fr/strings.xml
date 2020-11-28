@@ -4,8 +4,10 @@
 
     <string name="label_action_sort">Trier</string>
 
-    <string name="sort_alphabetical">A -&gt; Z</string>
-    <string name="sort_alphabetical_invert">Z -&gt; A</string>
+    <string name="sort_alphabetical_task">A -&gt; Z (tâche)</string>
+    <string name="sort_alphabetical_invert_task">Z -&gt; A(tâche)</string>
+    <string name="sort_alphabetical_project">A -&gt; Z (projet)</string>
+    <string name="sort_alphabetical_invert_project">Z -&gt; A (projet)</string>
     <string name="sort_oldest_first">Les plus anciens d’abord</string>
     <string name="sort_recent_first">Les plus récents d’abord</string>
 

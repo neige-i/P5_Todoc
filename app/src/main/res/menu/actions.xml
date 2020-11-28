@@ -13,13 +13,23 @@
         >
         <menu>
             <item
-                android:id="@+id/filter_alphabetical"
-                android:title="@string/sort_alphabetical"
+                android:id="@+id/filter_alphabetical_task"
+                android:title="@string/sort_alphabetical_task"
                 app:showAsAction="never|withText"
                 />
             <item
-                android:id="@+id/filter_alphabetical_inverted"
-                android:title="@string/sort_alphabetical_invert"
+                android:id="@+id/filter_alphabetical_inverted_task"
+                android:title="@string/sort_alphabetical_invert_task"
+                app:showAsAction="never|withText"
+                />
+            <item
+                android:id="@+id/filter_alphabetical_project"
+                android:title="@string/sort_alphabetical_project"
+                app:showAsAction="never|withText"
+                />
+            <item
+                android:id="@+id/filter_alphabetical_inverted_project"
+                android:title="@string/sort_alphabetical_invert_project"
                 app:showAsAction="never|withText"
                 />
             <item
