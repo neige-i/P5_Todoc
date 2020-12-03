@@ -1,13 +1,11 @@
 package com.neige_i.todoc.view;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
 
 import com.neige_i.todoc.R;
 import com.neige_i.todoc.data.model.Project;
@@ -18,7 +16,7 @@ import com.neige_i.todoc.view.util.SingleLiveEvent;
 import java.time.Instant;
 import java.util.List;
 
-public class TaskViewModel extends AndroidViewModel {
+public class TaskViewModel extends ViewModel {
 
     private final MutableLiveData<ORDER_BY> orderBy = new MutableLiveData<>();
     private final SingleLiveEvent<Void> dismissDialogEvent = new SingleLiveEvent<>();
@@ -28,9 +26,8 @@ public class TaskViewModel extends AndroidViewModel {
 
     private final TaskRepository taskRepository;
 
-    public TaskViewModel(@NonNull Application application) {
-        super(application);
-        taskRepository = new TaskRepository(application);
+    public TaskViewModel(@NonNull TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
         orderBy.setValue(ORDER_BY.NONE);
     }
 

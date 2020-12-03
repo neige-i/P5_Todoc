@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         // Init ViewModel
         viewModel = new ViewModelProvider(
             this,
-            new ViewModelProvider.AndroidViewModelFactory(getApplication())
+            TaskViewModelFactory.getInstance(getApplication())// new ViewModelProvider.AndroidViewModelFactory(getApplication())
         ).get(TaskViewModel.class);
 
         // Init data
