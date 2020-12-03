@@ -1,7 +1,9 @@
-package com.neige_i.todoc;
+package com.neige_i.todoc.util;
 
 import android.content.res.Resources;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 
 import org.hamcrest.Description;
@@ -44,9 +46,11 @@ public class RecyclerViewMatcher {
                 this.resources = view.getResources();
 
                 if (childView == null) {
-                    RecyclerView recyclerView = view.getRootView().findViewById(recyclerViewId);
+                    final RecyclerView recyclerView = view.getRootView().findViewById(recyclerViewId);
                     if (recyclerView != null && recyclerView.getId() == recyclerViewId) {
-                        childView = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                        final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+                        if (viewHolder != null)
+                            childView = viewHolder.itemView;
                     } else {
                         return false;
                     }

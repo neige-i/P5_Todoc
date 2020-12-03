@@ -1,12 +1,14 @@
-package com.neige_i.todoc;
+package com.neige_i.todoc.view;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.matcher.RootMatchers;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.neige_i.todoc.view.MainActivity;
+import com.neige_i.todoc.R;
+import com.neige_i.todoc.util.RecyclerViewMatcher;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,13 +34,17 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityInstrumentedTest {
 
+    // ---------------------------------- ACTIVITY RULE VARIABLE -----------------------------------
+
     @Rule
     public ActivityScenarioRule<MainActivity> rule = new ActivityScenarioRule<>(MainActivity.class);
+
+    // --------------------------------------- TEST METHODS ----------------------------------------
 
     @Test
     public void addAndRemoveTask() {
         // When: click on the FAB, type a text inside the TextInputEditText and click on the positive button
-        onView(withId(R.id.fab_add_task)).perform(click());
+        onView(ViewMatchers.withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.input_task_name)).perform(replaceText("Task example"));
         onView(withId(android.R.id.button1)).perform(click());
 
@@ -54,6 +60,7 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.lbl_no_task)).check(matches(isDisplayed()));
     }
 
+    // ASKME: split method
     @Test
     public void sortTasks() {
         // Given: add 3 tasks
@@ -190,11 +197,14 @@ public class MainActivityInstrumentedTest {
             .check(matches(withText("fff Task example")));
     }
 
+    // --------------------------------------- UTIL METHODS ----------------------------------------
+
     private ViewAssertion withItemCount(int count) {
         return (view, noViewFoundException) -> {
             if (noViewFoundException != null)
                 throw noViewFoundException;
 
+            //noinspection ConstantConditions
             assertThat(((RecyclerView) view).getAdapter().getItemCount(), is(count));
         };
     }

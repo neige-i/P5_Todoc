@@ -2,7 +2,6 @@ package com.neige_i.todoc.view;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -30,16 +29,21 @@ import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.TASK_NAME_DESC;
 
 public class MainActivity extends AppCompatActivity {
 
+    // ---------------------------------------- VIEW MODEL -----------------------------------------
+
     private TaskViewModel viewModel;
 
+    // ------------------------------------------- DATA --------------------------------------------
+
     private List<Project> allProjects;
+
+    // --------------------------------------- UI COMPONENTS ---------------------------------------
 
     private TaskAdapter taskAdapter;
     private TextView noTaskLbl;
     private AlertDialog dialog;
     private TextInputLayout taskNameLayout;
     private TextInputEditText taskNameInput;
-    private AutoCompleteTextView projectNameInput;
 
     // ------------------------------------- ACTIVITY METHODS --------------------------------------
 
@@ -54,18 +58,19 @@ public class MainActivity extends AppCompatActivity {
         // Init ViewModel
         viewModel = new ViewModelProvider(
             this,
-            TaskViewModelFactory.getInstance(getApplication())// new ViewModelProvider.AndroidViewModelFactory(getApplication())
+            TaskViewModelFactory.getInstance(getApplication())
         ).get(TaskViewModel.class);
 
         // Init data
         viewModel.getProjectList().observe(this, projects -> allProjects = projects);
+        viewModel.getFakeLiveData().observe(this, aVoid -> {
+        });
 
         // Init UI
         initUi();
 
         // Update Ui
         updateUi();
-        viewModel.getFakeLiveData().observe(this, aVoid -> {});
     }
 
     @Override
@@ -120,37 +125,40 @@ public class MainActivity extends AppCompatActivity {
         // Show dialog
         dialog.show();
 
-//        final Project[] allProjects = Project.getAllProjects();
-
-        // Init views
-        final int[] adapterPosition = {0};
+        // Find dialog's views
         taskNameLayout = dialog.findViewById(R.id.layout_task_name);
         taskNameInput = dialog.findViewById(R.id.input_task_name);
-        projectNameInput = dialog.findViewById(R.id.input_project_name);
+        final AutoCompleteTextView projectNameInput = dialog.findViewById(R.id.input_project_name);
+
+        // Init dialog's views
+        final int[] adapterPosition = {0};
         projectNameInput.setAdapter(new ArrayAdapter<>(
             this,
             android.R.layout.simple_list_item_1,
             allProjects
         ));
-        taskNameInput.setText("");
         projectNameInput.setText(allProjects.get(0).toString(), false);
+        // Update the adapterPosition variable when a dropdown item is clicked
         projectNameInput.setOnItemClickListener((parent, view, position, id) -> adapterPosition[0] = position);
+        taskNameInput.setText("");
 
         // Config button listener
         // TIPS: call getButton() AFTER showing the dialog (otherwise getButton() returns null)
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(
-            v -> viewModel.checkTask(taskNameInput.getText().toString(), allProjects.get(adapterPosition[0]).getId())
-        );
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            // Call the ViewModel method with the task name's input text and the selected project as arguments
+            if (taskNameInput.getText() != null)
+                viewModel.checkTask(taskNameInput.getText().toString(), allProjects.get(adapterPosition[0]).getId());
+        });
     }
 
     private void updateUi() {
-        // Update UI when state is changed
+        // Update UI when state is changed: change the list content and the TextView's visibility
         viewModel.getUiState().observe(this, mainUiModel -> {
             taskAdapter.submitList(mainUiModel.getTaskUiModels());
             noTaskLbl.setVisibility(mainUiModel.getNoTaskVisibility());
         });
 
-        // Update UI when events are triggered
+        // Update UI when events are triggered: dismiss the dialog or set the TextInputLayout's error message
         viewModel.getDismissDialogEvent().observe(this, aVoid -> dialog.dismiss());
         viewModel.getErrorMessageEvent().observe(this, errorMessageId -> taskNameLayout.setError(getString(errorMessageId)));
     }

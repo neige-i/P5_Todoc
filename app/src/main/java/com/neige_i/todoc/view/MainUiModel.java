@@ -11,8 +11,12 @@ import java.util.List;
 
 public class MainUiModel {
 
+    // ------------------------------------ INSTANCE VARIABLES -------------------------------------
+
     private final List<TaskUiModel> taskUiModels;
     private final int noTaskVisibility;
+
+    // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
     public MainUiModel(@NonNull List<Task> taskList) {
         taskUiModels = new ArrayList<>();

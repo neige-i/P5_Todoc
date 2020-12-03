@@ -3,19 +3,15 @@ package com.neige_i.todoc.view;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
-import com.neige_i.todoc.data.model.Project;
 import com.neige_i.todoc.data.repository.TaskRepository;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.List;
 
 import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_ASC;
 import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_DESC;
@@ -28,18 +24,24 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class TaskViewModelTest {
 
+    // ------------------------------------ TEST RULE VARIABLE -------------------------------------
+
     // Avoid error when MutableLiveData.setValue() is called in source code
     @Rule
-    public final TestRule rule = new InstantTaskExecutorRule();
+    public final InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
+
+    // ------------------------------------- OBJECT UNDER TEST -------------------------------------
+
+    TaskViewModel taskViewModel;
 
     @Mock
     TaskRepository mockTaskRepository;
 
     Observer<MainUiModel> mainUiModelObserver;
-    Observer<Void> fakeLiveDataObserver;
-    Observer<List<Project>> projectListObserver;
+//    Observer<Void> fakeLiveDataObserver;
+//    Observer<List<Project>> projectListObserver;
 
-    TaskViewModel taskViewModel;
+    // -------------------------------- SETUP AND TEARDOWN METHODS ---------------------------------
 
     @Before
     public void setUp() {
@@ -53,6 +55,8 @@ public class TaskViewModelTest {
         // Remove observers
         taskViewModel.getUiState().removeObserver(mainUiModelObserver);
     }
+
+    // --------------------------------------- TEST METHODS ----------------------------------------
 
 //    @Test
 //    public void testProjectList() {

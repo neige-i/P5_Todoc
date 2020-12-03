@@ -17,10 +17,16 @@ import java.util.concurrent.Executors;
 @Database(entities = {Task.class, Project.class}, version = 1, exportSchema = false)
 public abstract class TaskDatabase extends RoomDatabase {
 
+    // --------------------------------------- DAO INTERFACE ---------------------------------------
+
     public abstract TaskDao taskDao();
+
+    // -------------------------------------- CLASS VARIABLES --------------------------------------
 
     private static volatile TaskDatabase taskDatabase;
     public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(4);
+
+    // -------------------------------------- FACTORY METHODS --------------------------------------
 
     public static TaskDatabase getInstance(@NonNull Context context) {
         if (taskDatabase == null) {

@@ -13,23 +13,26 @@ import androidx.room.PrimaryKey;
  */
 @Entity
 public class Project {
+
+    // ------------------------------------ INSTANCE VARIABLES -------------------------------------
+
     /**
      * The unique identifier of the project
      */
     @PrimaryKey
     private final long id;
-
     /**
      * The name of the project
      */
     @NonNull
     private final String name;
-
     /**
      * The hex (ARGB) code of the color associated to the project
      */
     @ColorInt
     private final int color;
+
+    // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
     /**
      * Instantiates a new Project.
@@ -42,36 +45,6 @@ public class Project {
         this.id = id;
         this.name = name;
         this.color = color;
-    }
-
-    /**
-     * Returns all the projects of the application.
-     *
-     * @return all the projects of the application
-     */
-    @NonNull
-    public static Project[] getAllProjects() {
-        return new Project[]{
-            new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-            new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-            new Project(3L, "Projet Circus", 0xFFA3CED2),
-        };
-    }
-
-    /**
-     * Returns the project with the given unique identifier, or null if no project with that
-     * identifier can be found.
-     *
-     * @param id the unique identifier of the project to return
-     * @return the project with the given unique identifier, or null if it has not been found
-     */
-    @Nullable
-    public static Project getProjectById(long id) { // ASKME: replace with DAO query
-        for (Project project : getAllProjects()) {
-            if (project.id == id)
-                return project;
-        }
-        return null;
     }
 
     /**
@@ -103,6 +76,8 @@ public class Project {
         return color;
     }
 
+    // -------------------------------------- OBJECT METHODS ---------------------------------------
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,5 +92,37 @@ public class Project {
     @NonNull
     public String toString() {
         return getName();
+    }
+
+    // --------------------------------------- CLASS METHODS ---------------------------------------
+
+    /**
+     * Returns all the projects of the application.
+     *
+     * @return all the projects of the application
+     */
+    @NonNull
+    public static Project[] getAllProjects() {
+        return new Project[]{
+            new Project(1L, "Projet Tartampion", 0xFFEADAD1),
+            new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
+            new Project(3L, "Projet Circus", 0xFFA3CED2),
+        };
+    }
+
+    /**
+     * Returns the project with the given unique identifier, or null if no project with that
+     * identifier can be found.
+     *
+     * @param id the unique identifier of the project to return
+     * @return the project with the given unique identifier, or null if it has not been found
+     */
+    @Nullable
+    public static Project getProjectById(long id) { // TODO: replace with DAO query
+        for (Project project : getAllProjects()) {
+            if (project.id == id)
+                return project;
+        }
+        return null;
     }
 }

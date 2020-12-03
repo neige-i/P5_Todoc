@@ -16,29 +16,30 @@ import androidx.room.PrimaryKey;
 @Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "project_id"))
 public class Task {
 
+    // ------------------------------------ INSTANCE VARIABLES -------------------------------------
+
     /**
      * The unique identifier of the task
      */
     @PrimaryKey(autoGenerate = true)
     private long id;
-
     /**
      * The unique identifier of the project associated to the task
      */
     @ColumnInfo(name = "project_id", index = true)
     private final long projectId;
-
     /**
      * The name of the task
      */
     @NonNull
     private final String name;
-
     /**
      * The timestamp when the task has been created
      */
     @ColumnInfo(name = "creation_timestamp")
     private final long creationTimestamp;
+
+    // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
     /**
      * Instantiates a new Task.
@@ -76,16 +77,6 @@ public class Task {
     }
 
     /**
-     * Returns the project associated to the task.
-     *
-     * @return the project associated to the task
-     */
-    @Nullable
-    public Project getProject() {
-        return Project.getProjectById(projectId);
-    }
-
-    /**
      * Returns the name of the task.
      *
      * @return the name of the task
@@ -99,6 +90,8 @@ public class Task {
         return creationTimestamp;
     }
 
+    // -------------------------------------- OBJECT METHODS ---------------------------------------
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,5 +101,17 @@ public class Task {
             projectId == task.projectId &&
             creationTimestamp == task.creationTimestamp &&
             name.equals(task.name);
+    }
+
+    // --------------------------------------- OTHER METHODS ---------------------------------------
+
+    /**
+     * Returns the project associated to the task.
+     *
+     * @return the project associated to the task
+     */
+    @Nullable
+    public Project getProject() {
+        return Project.getProjectById(projectId);
     }
 }

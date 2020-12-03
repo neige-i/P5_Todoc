@@ -13,6 +13,8 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
+    // --------------------------------------- TASK QUERIES ----------------------------------------
+
     @Query("SELECT * FROM Task")
     LiveData<List<Task>> getAllTasks();
 
@@ -44,6 +46,8 @@ public interface TaskDao {
 
     @Query("DELETE FROM Task WHERE id = :taskId")
     void delete(long taskId);
+
+    // -------------------------------------- PROJECT QUERIES --------------------------------------
 
     @Insert
     void insert(Project project);

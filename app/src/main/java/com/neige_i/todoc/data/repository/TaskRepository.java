@@ -13,11 +13,17 @@ import java.util.List;
 
 public class TaskRepository {
 
+    // ------------------------------------ INSTANCE VARIABLES -------------------------------------
+
     private final TaskDao taskDao;
+
+    // ---------------------------------------- CONSTRUCTOR ----------------------------------------
 
     public TaskRepository(Application application) {
         taskDao = TaskDatabase.getInstance(application).taskDao();
     }
+
+    // --------------------------------------- TASK METHODS ----------------------------------------
 
     public LiveData<List<Task>> getTasks() {
         return taskDao.getAllTasks();
@@ -54,6 +60,8 @@ public class TaskRepository {
     public void deleteTask(long taskId) {
         TaskDatabase.databaseWriteExecutor.execute(() -> taskDao.delete(taskId));
     }
+
+    // -------------------------------------- PROJECT METHODS --------------------------------------
 
     public LiveData<List<Project>> getProjects() {
         return taskDao.getAllProjects();

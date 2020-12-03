@@ -25,8 +25,17 @@ import static org.hamcrest.Matchers.nullValue;
 @RunWith(AndroidJUnit4.class)
 public class TaskDaoTest {
 
+    // ------------------------------------ TEST RULE VARIABLE -------------------------------------
+
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
+    // ------------------------------------- OBJECT UNDER TEST -------------------------------------
+
     private TaskDatabase taskDatabase;
     private TaskDao taskDao;
+
+    // ------------------------------- TASKS AND PROJECTS TO HANDLE --------------------------------
 
     private final Project project1 = new Project(5, "Projet Tartampion", 0xFFEADAD1);
     private final Project project2 = new Project(6, "Projet Lucidia", 0xFFB4CDBA);
@@ -37,8 +46,7 @@ public class TaskDaoTest {
     private final Task task4 = new Task(4, 6, "HHH", 126);
     private final Task task5 = new Task(5, 6, "hha", 127);
 
-    @Rule
-    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+    // -------------------------------- SETUP AND TEARDOWN METHODS ---------------------------------
 
     @Before
     public void createDbAndAddInitialProjects() {
@@ -54,6 +62,8 @@ public class TaskDaoTest {
     public void closeDb() {
         taskDatabase.close();
     }
+
+    // ------------------------------------- TASK TEST METHODS -------------------------------------
 
     @Test
     public void getTasksTest() throws InterruptedException {
@@ -137,6 +147,8 @@ public class TaskDaoTest {
         assertThat(getValue(taskDao.getTasksByDateDesc()), is(Arrays.asList(task5, task4, task3, task2, task1)));
     }
 
+    // ----------------------------------- PROJECT TEST METHODS ------------------------------------
+
     @Test
     public void getProjectsTest() throws InterruptedException {
         assertThat(getValue(taskDao.getAllProjects()), is(Arrays.asList(project1, project2, project3)));
@@ -149,6 +161,8 @@ public class TaskDaoTest {
         assertThat(getValue(taskDao.getProjectById(7)), is(project3));
         assertThat(getValue(taskDao.getProjectById(8)), nullValue());
     }
+
+    // --------------------------------------- UTIL METHODS ----------------------------------------
 
     private void insert5Tasks() {
         taskDao.insert(task1);

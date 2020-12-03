@@ -18,13 +18,19 @@ import java.util.List;
 
 public class TaskViewModel extends ViewModel {
 
+    // ------------------------------------ LIVE DATA VARIABLES ------------------------------------
+
     private final MutableLiveData<ORDER_BY> orderBy = new MutableLiveData<>();
     private final SingleLiveEvent<Void> dismissDialogEvent = new SingleLiveEvent<>();
     private final SingleLiveEvent<Integer> errorMessageEvent = new SingleLiveEvent<>();
 
     private final MediatorLiveData<Void> fakeLiveData = new MediatorLiveData<>();
 
+    // -------------------------------------- LOCAL VARIABLES --------------------------------------
+
     private final TaskRepository taskRepository;
+
+    // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
     public TaskViewModel(@NonNull TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -68,6 +74,8 @@ public class TaskViewModel extends ViewModel {
         return errorMessageEvent;
     }
 
+    // --------------------------------------- TASK METHODS ----------------------------------------
+
     public void removeTask(long taskId) {
         taskRepository.deleteTask(taskId);
     }
@@ -91,6 +99,8 @@ public class TaskViewModel extends ViewModel {
             }
         });
     }
+
+    // ---------------------------------------- ENUM CLASS -----------------------------------------
 
     enum ORDER_BY {
         TASK_NAME_ASC,

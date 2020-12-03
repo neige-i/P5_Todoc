@@ -10,6 +10,8 @@ import com.neige_i.todoc.data.model.Task;
 
 public class TaskUiModel {
 
+    // ------------------------------------ INSTANCE VARIABLES -------------------------------------
+
     private final long taskId;
     @NonNull
     private final String taskName;
@@ -17,6 +19,8 @@ public class TaskUiModel {
     private final String projectName;
     @NonNull
     private final ColorStateList projectColor;
+
+    // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
     public TaskUiModel(@NonNull Task task) {
         taskId = task.getId();
@@ -50,6 +54,8 @@ public class TaskUiModel {
     public ColorStateList getProjectColor() {
         return projectColor;
     }
+
+    // -------------------------------------- OBJECT METHODS ---------------------------------------
 
     @Override
     public boolean equals(Object o) {
