@@ -13,6 +13,7 @@ import com.neige_i.todoc.data.model.Task;
 import com.neige_i.todoc.data.repository.TaskRepository;
 import com.neige_i.todoc.view.util.SingleLiveEvent;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 
@@ -20,27 +21,37 @@ public class TaskViewModel extends ViewModel {
 
     // ------------------------------------ LIVE DATA VARIABLES ------------------------------------
 
+    @NonNull
     private final MutableLiveData<ORDER_BY> orderBy = new MutableLiveData<>();
+    @NonNull
     private final SingleLiveEvent<Void> dismissDialogEvent = new SingleLiveEvent<>();
+    @NonNull
     private final SingleLiveEvent<Integer> errorMessageEvent = new SingleLiveEvent<>();
 
+    @NonNull
     private final MediatorLiveData<Void> fakeLiveData = new MediatorLiveData<>();
 
     // -------------------------------------- LOCAL VARIABLES --------------------------------------
 
+    @NonNull
     private final TaskRepository taskRepository;
+    @NonNull
+    private final Clock clock;
 
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
-    public TaskViewModel(@NonNull TaskRepository taskRepository) {
+    public TaskViewModel(@NonNull TaskRepository taskRepository, @NonNull Clock clock) {
         this.taskRepository = taskRepository;
+        this.clock = clock;
         orderBy.setValue(ORDER_BY.NONE);
     }
 
+    @NonNull
     public LiveData<List<Project>> getProjectList() {
         return taskRepository.getProjects();
     }
 
+    @NonNull
     public LiveData<MainUiModel> getUiState() {
         return Transformations.map(Transformations.switchMap(orderBy, orderBy -> {
             switch (orderBy) {
@@ -62,14 +73,17 @@ public class TaskViewModel extends ViewModel {
         }), MainUiModel::new);
     }
 
+    @NonNull
     public LiveData<Void> getFakeLiveData() {
         return fakeLiveData;
     }
 
+    @NonNull
     public LiveData<Void> getDismissDialogEvent() {
         return dismissDialogEvent;
     }
 
+    @NonNull
     public LiveData<Integer> getErrorMessageEvent() {
         return errorMessageEvent;
     }
@@ -92,7 +106,7 @@ public class TaskViewModel extends ViewModel {
                 taskRepository.addTask(new Task(
                     project.getId(),
                     taskName,
-                    Instant.now().toEpochMilli()
+                    Instant.now(clock).toEpochMilli()
                 ));
 
                 dismissDialogEvent.call();

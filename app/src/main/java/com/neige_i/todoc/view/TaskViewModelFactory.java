@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.neige_i.todoc.data.repository.TaskRepository;
 
+import java.time.Clock;
+
 public class TaskViewModelFactory implements ViewModelProvider.Factory {
 
     // -------------------------------------  CLASS VARIABLES --------------------------------------
@@ -44,7 +46,7 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(TaskViewModel.class)) {
-            return (T) new TaskViewModel(new TaskRepository(application)); // ASKME: no use of DI, use interface and implementation class
+            return (T) new TaskViewModel(new TaskRepository(application), Clock.systemDefaultZone()); // ASKME: no use of DI, use interface and implementation class
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

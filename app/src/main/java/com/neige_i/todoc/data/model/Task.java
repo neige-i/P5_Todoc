@@ -8,6 +8,8 @@ import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 /**
  * <p>Model for the tasks of the application.</p>
  *
@@ -103,6 +105,10 @@ public class Task {
             name.equals(task.name);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, projectId, name, creationTimestamp);
+    }
     // --------------------------------------- OTHER METHODS ---------------------------------------
 
     /**
