@@ -109,15 +109,4 @@ public class Task {
     public int hashCode() {
         return Objects.hash(id, projectId, name, creationTimestamp);
     }
-    // --------------------------------------- OTHER METHODS ---------------------------------------
-
-    /**
-     * Returns the project associated to the task.
-     *
-     * @return the project associated to the task
-     */
-    @Nullable
-    public Project getProject() {
-        return Project.getProjectById(projectId);
-    }
 }

@@ -22,18 +22,12 @@ public class TaskUiModel {
 
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
-    public TaskUiModel(@NonNull Task task) {
-        taskId = task.getId();
-        taskName = task.getName();
 
-        final Project project = task.getProject();
-        if (project != null) {
-            projectName = project.getName();
-            projectColor = ColorStateList.valueOf(project.getColor());
-        } else {
-            projectName = "";
-            projectColor = ColorStateList.valueOf(Color.TRANSPARENT);
-        }
+    public TaskUiModel(long taskId, @NonNull String taskName, @NonNull String projectName, @NonNull ColorStateList projectColor) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.projectName = projectName;
+        this.projectColor = projectColor;
     }
 
     public long getTaskId() {

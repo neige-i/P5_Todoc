@@ -20,12 +20,12 @@ import com.neige_i.todoc.data.model.Project;
 
 import java.util.List;
 
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.PROJECT_NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.PROJECT_NAME_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.TASK_NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.TASK_NAME_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_DESC;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,9 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TaskViewModel viewModel;
 
-    // ------------------------------------------- DATA --------------------------------------------
 
-    private List<Project> allProjects;
 
     // --------------------------------------- UI COMPONENTS ---------------------------------------
 
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             .setView(R.layout.dialog_add_task)
             .setPositiveButton(R.string.add, null) // TIPS: null listener to avoid automatic dismiss
             .create();
-        findViewById(R.id.fab_add_task).setOnClickListener(v -> configDialog());
+        findViewById(R.id.fab_add_task).setOnClickListener(v -> viewModel.onAddTaskClicked());
     }
 
     private void configDialog() {
