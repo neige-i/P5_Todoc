@@ -13,12 +13,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.DATE_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.PROJECT_NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.PROJECT_NAME_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.TASK_NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.ORDER_BY.TASK_NAME_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_DESC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_ASC;
+import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_DESC;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)

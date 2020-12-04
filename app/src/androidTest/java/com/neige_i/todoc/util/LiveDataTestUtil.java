@@ -29,7 +29,7 @@ public class LiveDataTestUtil {
      * Get the value from a LiveData object. We're waiting for LiveData to emit, for 2 seconds.
      * Once we got a notification via onChanged, we stop observing.
      */
-    public static <T> T getValue(final LiveData<T> liveData) throws InterruptedException {
+    public static <T> T awaitForValue(final LiveData<T> liveData) throws InterruptedException {
         final Object[] data = new Object[1];
         final CountDownLatch latch = new CountDownLatch(1);
         Observer<T> observer = new Observer<T>() {

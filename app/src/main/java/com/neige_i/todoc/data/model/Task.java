@@ -102,16 +102,4 @@ public class Task {
             creationTimestamp == task.creationTimestamp &&
             name.equals(task.name);
     }
-
-    // --------------------------------------- OTHER METHODS ---------------------------------------
-
-    /**
-     * Returns the project associated to the task.
-     *
-     * @return the project associated to the task
-     */
-    @Nullable
-    public Project getProject() {
-        return Project.getProjectById(projectId);
-    }
 }
