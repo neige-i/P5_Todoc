@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import static com.neige_i.todoc.util.LiveDataTestUtil.getValue;
+import static com.neige_i.todoc.util.LiveDataTestUtil.awaitForValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -67,7 +67,7 @@ public class TaskDaoTest {
 
     @Test
     public void getTasksTest() throws InterruptedException {
-        assertThat(getValue(taskDao.getAllTasks()), is(empty()));
+        assertThat(awaitForValue(taskDao.getAllTasks()), is(empty()));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class TaskDaoTest {
         insert5Tasks();
 
         // Then: the task list equals the expected one
-        assertThat(getValue(taskDao.getAllTasks()), is(Arrays.asList(task1, task2, task3, task4, task5)));
+        assertThat(awaitForValue(taskDao.getAllTasks()), is(Arrays.asList(task1, task2, task3, task4, task5)));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class TaskDaoTest {
         taskDao.delete(5);
 
         // Then: the task list contains the 2 remaining ones
-        assertThat(getValue(taskDao.getAllTasks()), is(Arrays.asList(task2, task4)));
+        assertThat(awaitForValue(taskDao.getAllTasks()), is(Arrays.asList(task2, task4)));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TaskDaoTest {
         insert5Tasks();
 
         // Then: the task list equals the expected one
-        assertThat(getValue(taskDao.getTasksByNameAsc()), is(Arrays.asList(task2, task3, task1, task5, task4)));
+        assertThat(awaitForValue(taskDao.getTasksByNameAsc()), is(Arrays.asList(task2, task3, task1, task5, task4)));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class TaskDaoTest {
         insert5Tasks();
 
         // Then: the task list equals the expected one
-        assertThat(getValue(taskDao.getTasksByNameDesc()), is(Arrays.asList(task4, task5, task1, task3, task2)));
+        assertThat(awaitForValue(taskDao.getTasksByNameDesc()), is(Arrays.asList(task4, task5, task1, task3, task2)));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class TaskDaoTest {
         insert5Tasks();
 
         // Then: the task list equals the expected one
-        assertThat(getValue(taskDao.getTasksByProjectNameAsc()), is(Arrays.asList(task3, task2, task5, task4, task1)));
+        assertThat(awaitForValue(taskDao.getTasksByProjectNameAsc()), is(Arrays.asList(task3, task2, task5, task4, task1)));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class TaskDaoTest {
         insert5Tasks();
 
         // Then: the task list equals the expected one
-        assertThat(getValue(taskDao.getTasksByProjectNameDesc()), is(Arrays.asList(task1, task2, task5, task4, task3)));
+        assertThat(awaitForValue(taskDao.getTasksByProjectNameDesc()), is(Arrays.asList(task1, task2, task5, task4, task3)));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class TaskDaoTest {
         insert5Tasks();
 
         // Then: the task list equals the expected one
-        assertThat(getValue(taskDao.getTasksByDateAsc()), is(Arrays.asList(task1, task2, task3, task4, task5)));
+        assertThat(awaitForValue(taskDao.getTasksByDateAsc()), is(Arrays.asList(task1, task2, task3, task4, task5)));
     }
 
     @Test
@@ -144,22 +144,22 @@ public class TaskDaoTest {
         insert5Tasks();
 
         // Then: the task list equals the expected one
-        assertThat(getValue(taskDao.getTasksByDateDesc()), is(Arrays.asList(task5, task4, task3, task2, task1)));
+        assertThat(awaitForValue(taskDao.getTasksByDateDesc()), is(Arrays.asList(task5, task4, task3, task2, task1)));
     }
 
     // ----------------------------------- PROJECT TEST METHODS ------------------------------------
 
     @Test
     public void getProjectsTest() throws InterruptedException {
-        assertThat(getValue(taskDao.getAllProjects()), is(Arrays.asList(project1, project2, project3)));
+        assertThat(awaitForValue(taskDao.getAllProjects()), is(Arrays.asList(project1, project2, project3)));
     }
 
     @Test
     public void getProjectByIdTest() throws InterruptedException {
-        assertThat(getValue(taskDao.getProjectById(5)), is(project1));
-        assertThat(getValue(taskDao.getProjectById(6)), is(project2));
-        assertThat(getValue(taskDao.getProjectById(7)), is(project3));
-        assertThat(getValue(taskDao.getProjectById(8)), nullValue());
+        assertThat(awaitForValue(taskDao.getProjectById(5)), is(project1));
+        assertThat(awaitForValue(taskDao.getProjectById(6)), is(project2));
+        assertThat(awaitForValue(taskDao.getProjectById(7)), is(project3));
+        assertThat(awaitForValue(taskDao.getProjectById(8)), nullValue());
     }
 
     // --------------------------------------- UTIL METHODS ----------------------------------------

@@ -17,9 +17,12 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
     private static TaskViewModelFactory factory;
     private static Application application;
 
+    private final TaskRepository taskRepository;
+
     // ---------------------------------------- CONSTRUCTOR ----------------------------------------
 
-    private TaskViewModelFactory() {
+    private TaskViewModelFactory(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
     // -------------------------------------- FACTORY METHODS --------------------------------------
@@ -29,7 +32,7 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
         if (factory == null) {
             synchronized (TaskViewModelFactory.class) {
                 if (factory == null) {
-                    factory = new TaskViewModelFactory();
+                    factory = new TaskViewModelFactory(new TaskRepository(application));
                     TaskViewModelFactory.application = application;
                 }
             }
@@ -44,7 +47,7 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(TaskViewModel.class)) {
-            return (T) new TaskViewModel(new TaskRepository(application)); // ASKME: no use of DI, use interface and implementation class
+            return (T) new TaskViewModel(taskRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
