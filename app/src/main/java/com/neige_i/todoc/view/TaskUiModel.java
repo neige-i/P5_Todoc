@@ -1,12 +1,8 @@
 package com.neige_i.todoc.view;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 
 import androidx.annotation.NonNull;
-
-import com.neige_i.todoc.data.model.Project;
-import com.neige_i.todoc.data.model.Task;
 
 public class TaskUiModel {
 
@@ -21,7 +17,6 @@ public class TaskUiModel {
     private final ColorStateList projectColor;
 
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
-
 
     public TaskUiModel(long taskId, @NonNull String taskName, @NonNull String projectName, @NonNull ColorStateList projectColor) {
         this.taskId = taskId;

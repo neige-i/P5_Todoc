@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.neige_i.todoc.R;
 import com.neige_i.todoc.data.model.Project;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_ASC;
@@ -31,17 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     // ---------------------------------------- VIEW MODEL -----------------------------------------
 
-    private TaskViewModel viewModel;
-
-
-
-    // --------------------------------------- UI COMPONENTS ---------------------------------------
-
-    private TaskAdapter taskAdapter;
-    private TextView noTaskLbl;
-    private AlertDialog dialog;
-    private TextInputLayout taskNameLayout;
-    private TextInputEditText taskNameInput;
+    private TaskViewModel viewModel; // ASKME: passing parameters between methods, retrieve project list
 
     // ------------------------------------- ACTIVITY METHODS --------------------------------------
 
@@ -60,15 +52,19 @@ public class MainActivity extends AppCompatActivity {
         ).get(TaskViewModel.class);
 
         // Init data
-        viewModel.getProjectList().observe(this, projects -> allProjects = projects);
+//        viewModel.getProjectList().observe(this, projects -> allProjects = projects);
         viewModel.getFakeLiveData().observe(this, aVoid -> {
         });
 
         // Init UI
-        initUi();
+        final Object[] uiComponents = initUi();
 
         // Update Ui
-        updateUi();
+        updateUi(
+            (TaskAdapter) uiComponents[0],
+            (TextView) uiComponents[1],
+            (AlertDialog) uiComponents[2]
+        );
     }
 
     @Override
@@ -106,26 +102,29 @@ public class MainActivity extends AppCompatActivity {
 
     // ---------------------------------------- UI METHODS -----------------------------------------
 
-    private void initUi() {
-        taskAdapter = new TaskAdapter(viewModel::removeTask);
+    private Object[] initUi() {
+        final TaskAdapter taskAdapter = new TaskAdapter(viewModel::removeTask);
         ((RecyclerView) findViewById(R.id.list_task)).setAdapter(taskAdapter);
-        noTaskLbl = findViewById(R.id.lbl_no_task);
+        final TextView noTaskLbl = findViewById(R.id.lbl_no_task);
 
-        dialog = new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.add_task)
             .setView(R.layout.dialog_add_task)
             .setPositiveButton(R.string.add, null) // TIPS: null listener to avoid automatic dismiss
             .create();
-        findViewById(R.id.fab_add_task).setOnClickListener(v -> viewModel.onAddTaskClicked());
+        findViewById(R.id.fab_add_task).setOnClickListener(v -> viewModel.openDialog());
+
+        // ASKME: use array or POJO to return multiple values
+        return new Object[]{taskAdapter, noTaskLbl, dialog};
     }
 
-    private void configDialog() {
+    private TextInputLayout configDialog(AlertDialog dialog, List<Project> allProjects) {
         // Show dialog
         dialog.show();
 
         // Find dialog's views
-        taskNameLayout = dialog.findViewById(R.id.layout_task_name);
-        taskNameInput = dialog.findViewById(R.id.input_task_name);
+        final TextInputLayout taskNameLayout = dialog.findViewById(R.id.layout_task_name);
+        final TextInputEditText taskNameInput = dialog.findViewById(R.id.input_task_name);
         final AutoCompleteTextView projectNameInput = dialog.findViewById(R.id.input_project_name);
 
         // Init dialog's views
@@ -147,17 +146,24 @@ public class MainActivity extends AppCompatActivity {
             if (taskNameInput.getText() != null)
                 viewModel.checkTask(taskNameInput.getText().toString(), allProjects.get(adapterPosition[0]).getId());
         });
+
+        return taskNameLayout;
     }
 
-    private void updateUi() {
+    private void updateUi(TaskAdapter taskAdapter, TextView noTaskLbl, AlertDialog dialog) {
         // Update UI when state is changed: change the list content and the TextView's visibility
+        final List<Project> projectList = new ArrayList<>();
         viewModel.getUiState().observe(this, mainUiModel -> {
             taskAdapter.submitList(mainUiModel.getTaskUiModels());
-            noTaskLbl.setVisibility(mainUiModel.getNoTaskVisibility());
+            noTaskLbl.setVisibility(mainUiModel.isNoTaskVisible() ? View.VISIBLE : View.GONE);
+            projectList.clear();
+            projectList.addAll(mainUiModel.getProjectList());
         });
 
         // Update UI when events are triggered: dismiss the dialog or set the TextInputLayout's error message
+        final TextInputLayout[] taskNameLayout = new TextInputLayout[1];
+        viewModel.getOpenDialogEvent().observe(this, aVoid -> taskNameLayout[0] = configDialog(dialog, projectList));
         viewModel.getDismissDialogEvent().observe(this, aVoid -> dialog.dismiss());
-        viewModel.getErrorMessageEvent().observe(this, errorMessageId -> taskNameLayout.setError(getString(errorMessageId)));
+        viewModel.getErrorMessageEvent().observe(this, errorMessageId -> taskNameLayout[0].setError(getString(errorMessageId)));
     }
 }

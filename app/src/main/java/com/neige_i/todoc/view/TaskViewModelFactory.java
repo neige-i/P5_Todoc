@@ -17,7 +17,6 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
 
     @Nullable
     private static TaskViewModelFactory factory;
-    private static Application application;
 
     private final TaskRepository taskRepository;
 
@@ -35,7 +34,6 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
             synchronized (TaskViewModelFactory.class) {
                 if (factory == null) {
                     factory = new TaskViewModelFactory(new TaskRepository(application));
-                    TaskViewModelFactory.application = application;
                 }
             }
         }

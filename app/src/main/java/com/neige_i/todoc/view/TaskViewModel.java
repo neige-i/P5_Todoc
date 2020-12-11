@@ -28,6 +28,8 @@ public class TaskViewModel extends ViewModel {
     @NonNull
     private final MutableLiveData<OrderBy> orderBy = new MutableLiveData<>();
     @NonNull
+    private final SingleLiveEvent<Void> openDialogEvent = new SingleLiveEvent<>();
+    @NonNull
     private final SingleLiveEvent<Void> dismissDialogEvent = new SingleLiveEvent<>();
     @NonNull
     private final SingleLiveEvent<Integer> errorMessageEvent = new SingleLiveEvent<>();
@@ -52,7 +54,7 @@ public class TaskViewModel extends ViewModel {
         this.clock = clock;
         orderBy.setValue(OrderBy.NONE);
 
-        LiveData<List<Task>> tasksLiveData = Transformations.switchMap(orderBy, orderBy -> {
+        final LiveData<List<Task>> tasksLiveData = Transformations.switchMap(orderBy, orderBy -> {
             switch (orderBy) {
                 case TASK_NAME_ASC:
                     return taskRepository.getTasksByNameAsc();
@@ -71,16 +73,11 @@ public class TaskViewModel extends ViewModel {
             }
         });
 
-        LiveData<List<Project>> projectsLiveData = taskRepository.getProjects();
+        final LiveData<List<Project>> projectsLiveData = taskRepository.getProjects();
 
         mainUiModelMediatorLiveData.addSource(tasksLiveData, tasks -> combine(tasks, projectsLiveData.getValue()));
 
         mainUiModelMediatorLiveData.addSource(projectsLiveData, projects -> combine(tasksLiveData.getValue(), projects));
-    }
-
-    // TODO Don't expose multiple LiveData<State>
-    public LiveData<List<Project>> getProjectList() {
-        return taskRepository.getProjects();
     }
 
     public LiveData<MainUiModel> getUiState() {
@@ -92,7 +89,7 @@ public class TaskViewModel extends ViewModel {
             return;
         }
 
-        List<TaskUiModel> taskUiModels = new ArrayList<>();
+        final List<TaskUiModel> taskUiModels = new ArrayList<>();
 
         for (Task task : tasks) {
             for (Project project : projects) {
@@ -111,17 +108,17 @@ public class TaskViewModel extends ViewModel {
             }
         }
 
-        mainUiModelMediatorLiveData.setValue(
-            new MainUiModel(
-                taskUiModels,
-                taskUiModels.isEmpty()
-            )
-        );
+        mainUiModelMediatorLiveData.setValue(new MainUiModel(taskUiModels, taskUiModels.isEmpty(), projects));
     }
 
     @NonNull
     public LiveData<Void> getFakeLiveData() {
         return fakeLiveData;
+    }
+
+    @NonNull
+    public LiveData<Void> getOpenDialogEvent() {
+        return openDialogEvent;
     }
 
     @NonNull
@@ -135,6 +132,10 @@ public class TaskViewModel extends ViewModel {
     }
 
     // --------------------------------------- TASK METHODS ----------------------------------------
+
+    public void openDialog() {
+        openDialogEvent.call();
+    }
 
     public void removeTask(long taskId) {
         taskRepository.deleteTask(taskId);

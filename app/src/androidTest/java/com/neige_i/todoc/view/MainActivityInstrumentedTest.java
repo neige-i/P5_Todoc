@@ -60,7 +60,6 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.lbl_no_task)).check(matches(isDisplayed()));
     }
 
-    // ASKME: split method
     @Test
     public void sortTasks() {
         // Given: add 3 tasks
@@ -204,7 +203,6 @@ public class MainActivityInstrumentedTest {
             if (noViewFoundException != null)
                 throw noViewFoundException;
 
-            //noinspection ConstantConditions
             assertThat(((RecyclerView) view).getAdapter().getItemCount(), is(count));
         };
     }

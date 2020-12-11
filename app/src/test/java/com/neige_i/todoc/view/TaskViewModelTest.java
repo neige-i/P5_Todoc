@@ -2,15 +2,12 @@ package com.neige_i.todoc.view;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.neige_i.todoc.data.model.Project;
 import com.neige_i.todoc.data.model.Task;
 import com.neige_i.todoc.data.repository.TaskRepository;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +29,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskViewModelTest {
@@ -56,27 +52,15 @@ public class TaskViewModelTest {
         ZoneId.systemDefault()
     );
 
-    Observer<MainUiModel> mainUiModelObserver;
-
     // -------------------------------- SETUP AND TEARDOWN METHODS ---------------------------------
 
     @Before
     public void setUp() {
         // Init ViewModel and observe LiveData forever
         taskViewModel = new TaskViewModel(mockTaskRepository, clock);
-
     }
 
     // --------------------------------------- TEST METHODS ----------------------------------------
-
-    @Test
-    public void testProjectList() {
-        // When:
-        taskViewModel.getProjectList();
-
-        // Then:
-        verify(mockTaskRepository).getProjects();
-    }
 
     @Test
     public void testDefaultSort() {
