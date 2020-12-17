@@ -1,6 +1,8 @@
 package com.neige_i.todoc.view;
 
 import android.content.res.ColorStateList;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +22,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class TaskViewModel extends ViewModel {
 
@@ -33,11 +36,7 @@ public class TaskViewModel extends ViewModel {
     private final SingleLiveEvent<Void> dismissDialogEvent = new SingleLiveEvent<>();
     @NonNull
     private final SingleLiveEvent<Integer> errorMessageEvent = new SingleLiveEvent<>();
-
     @NonNull
-    // TODO Plus besoin
-    private final MediatorLiveData<Void> fakeLiveData = new MediatorLiveData<>();
-
     private final MediatorLiveData<MainUiModel> mainUiModelMediatorLiveData = new MediatorLiveData<>();
 
     // -------------------------------------- LOCAL VARIABLES --------------------------------------
@@ -112,11 +111,6 @@ public class TaskViewModel extends ViewModel {
     }
 
     @NonNull
-    public LiveData<Void> getFakeLiveData() {
-        return fakeLiveData;
-    }
-
-    @NonNull
     public LiveData<Void> getOpenDialogEvent() {
         return openDialogEvent;
     }
@@ -146,7 +140,7 @@ public class TaskViewModel extends ViewModel {
     }
 
     public void checkTask(@NonNull String taskName, long projectId) {
-        fakeLiveData.addSource(taskRepository.getProjectById(projectId), project -> {
+        getProjectByIdAsync(projectId, project -> {
             if (taskName.trim().isEmpty()) {
                 errorMessageEvent.setValue(R.string.empty_task_name);
             } else if (project != null) {
@@ -159,6 +153,26 @@ public class TaskViewModel extends ViewModel {
                 dismissDialogEvent.call();
             }
         });
+    }
+
+    // --------------------------------------- ASYNC METHOD ----------------------------------------
+
+    private void getProjectByIdAsync(long projectId, @NonNull Callback callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Background work here: query project from database
+            final Project project = taskRepository.getProjectById(projectId);
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                // UI thread work here: return SQL query result to main thread
+                callback.getProject(project);
+            });
+        });
+    }
+
+    // ------------------------------------ CALLBACK INTERFACE -------------------------------------
+
+    public interface Callback {
+        void getProject(@Nullable Project project);
     }
 
     // ---------------------------------------- ENUM CLASS -----------------------------------------

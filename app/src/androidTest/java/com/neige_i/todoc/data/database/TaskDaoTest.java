@@ -155,11 +155,11 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void getProjectByIdTest() throws InterruptedException {
-        assertThat(awaitForValue(taskDao.getProjectById(5)), is(project1));
-        assertThat(awaitForValue(taskDao.getProjectById(6)), is(project2));
-        assertThat(awaitForValue(taskDao.getProjectById(7)), is(project3));
-        assertThat(awaitForValue(taskDao.getProjectById(8)), nullValue());
+    public void getProjectByIdTest() {
+        assertThat(taskDao.getProjectById(5), is(project1));
+        assertThat(taskDao.getProjectById(6), is(project2));
+        assertThat(taskDao.getProjectById(7), is(project3));
+        assertThat(taskDao.getProjectById(8), nullValue());
     }
 
     // --------------------------------------- UTIL METHODS ----------------------------------------

@@ -67,7 +67,7 @@ public class TaskRepository {
         return taskDao.getAllProjects();
     }
 
-    public LiveData<Project> getProjectById(long projectId) {
+    public Project getProjectById(long projectId) {
         return taskDao.getProjectById(projectId);
     }
 }

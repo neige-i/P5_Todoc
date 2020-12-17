@@ -4,9 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
-import com.neige_i.todoc.data.model.Project;
-import com.neige_i.todoc.data.model.Task;
 import com.neige_i.todoc.data.repository.TaskRepository;
+import com.neige_i.todoc.util.LiveDataTestUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,9 +24,7 @@ import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_ASC;
 import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_DESC;
 import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_ASC;
 import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_DESC;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,10 +38,10 @@ public class TaskViewModelTest {
 
     // ------------------------------------- OBJECT UNDER TEST -------------------------------------
 
-    TaskViewModel taskViewModel;
+    private TaskViewModel taskViewModel;
 
     @Mock
-    TaskRepository mockTaskRepository;
+    private TaskRepository mockTaskRepository;
 
     @NonNull
     private final Clock clock = Clock.fixed(
@@ -52,18 +49,36 @@ public class TaskViewModelTest {
         ZoneId.systemDefault()
     );
 
-    // -------------------------------- SETUP AND TEARDOWN METHODS ---------------------------------
+//    private MutableLiveData<List<Task>> tasksLiveData;
+//    private MutableLiveData<List<Project>> projectsLiveData;
+
+    // --------------------------------------- SETUP METHODS ---------------------------------------
 
     @Before
-    public void setUp() {
-        // Init ViewModel and observe LiveData forever
+    public void setUp() throws InterruptedException {
+        // Init mock BEFORE init ViewModel in THAT ORDER
+//        tasksLiveData = new MutableLiveData<>();
+//        projectsLiveData = new MutableLiveData<>();
+//        doReturn(tasksLiveData).when(mockTaskRepository).getTasks();
+        doReturn(/*projectsLiveData*/new MutableLiveData<>()).when(mockTaskRepository).getProjects();
+//        doReturn(mock(Looper.class)).when()
+
         taskViewModel = new TaskViewModel(mockTaskRepository, clock);
+
+        // Wait for LiveData value to be available
+        LiveDataTestUtil.awaitForValue(taskViewModel.getUiState());
     }
 
     // --------------------------------------- TEST METHODS ----------------------------------------
 
     @Test
     public void testDefaultSort() {
+        // Given:
+//        tasksLiveData.setValue(new ArrayList<>()/*mock(List<Task>.class)*/);
+//        projectsLiveData.setValue(new ArrayList<>()/*mock(List<Task>.class)*/);
+
+        // Then:
+        verify(mockTaskRepository).getProjects();
         verify(mockTaskRepository).getTasks();
     }
 
@@ -132,17 +147,19 @@ public class TaskViewModelTest {
 
     @Test
     public void testCheckTask() {
-        // Given:
-        MutableLiveData<Project> mutableLiveData = new MutableLiveData<>();
-        mutableLiveData.setValue(mock(Project.class));
-        doReturn(mutableLiveData).when(mockTaskRepository).getProjectById(1);
+        taskViewModel.checkTask("Task", 1L);
 
-        // When:
-        taskViewModel.checkTask("task", 1);
-
-
-        // Then:
-        verify(mockTaskRepository).getProjectById(1);
-        verify(mockTaskRepository).addTask(eq(new Task(1, "task", clock.instant().toEpochMilli())));
+//        // Given:
+//        MutableLiveData<Project> mutableLiveData = new MutableLiveData<>();
+//        mutableLiveData.setValue(mock(Project.class));
+//        doReturn(mutableLiveData).when(mockTaskRepository).getProjectById(1);
+//
+//        // When:
+//        taskViewModel.checkTask("task", 1);
+//
+//
+//        // Then:
+//        verify(mockTaskRepository).getProjectById(1);
+//        verify(mockTaskRepository).addTask(eq(new Task(1, "task", clock.instant().toEpochMilli())));
     }
 }

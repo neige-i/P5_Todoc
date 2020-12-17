@@ -51,11 +51,6 @@ public class MainActivity extends AppCompatActivity {
             TaskViewModelFactory.getInstance(getApplication())
         ).get(TaskViewModel.class);
 
-        // Init data
-//        viewModel.getProjectList().observe(this, projects -> allProjects = projects);
-        viewModel.getFakeLiveData().observe(this, aVoid -> {
-        });
-
         // Init UI
         final Object[] uiComponents = initUi();
 
@@ -151,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUi(TaskAdapter taskAdapter, TextView noTaskLbl, AlertDialog dialog) {
-        // Update UI when state is changed: change the list content and the TextView's visibility
+        // Update UI when state is changed
         final List<Project> projectList = new ArrayList<>();
         viewModel.getUiState().observe(this, mainUiModel -> {
             taskAdapter.submitList(mainUiModel.getTaskUiModels());
@@ -160,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             projectList.addAll(mainUiModel.getProjectList());
         });
 
-        // Update UI when events are triggered: dismiss the dialog or set the TextInputLayout's error message
+        // Update UI when events are triggered
         final TextInputLayout[] taskNameLayout = new TextInputLayout[1];
         viewModel.getOpenDialogEvent().observe(this, aVoid -> taskNameLayout[0] = configDialog(dialog, projectList));
         viewModel.getDismissDialogEvent().observe(this, aVoid -> dialog.dismiss());

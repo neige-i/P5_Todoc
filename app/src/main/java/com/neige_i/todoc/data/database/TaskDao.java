@@ -56,5 +56,5 @@ public interface TaskDao {
     LiveData<List<Project>> getAllProjects();
 
     @Query("SELECT * FROM Project WHERE id = :projectId")
-    LiveData<Project> getProjectById(long projectId);
+    Project getProjectById(long projectId);
 }
