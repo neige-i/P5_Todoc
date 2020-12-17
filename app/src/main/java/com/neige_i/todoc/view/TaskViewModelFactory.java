@@ -1,6 +1,8 @@
 package com.neige_i.todoc.view;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,7 +49,7 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(TaskViewModel.class)) {
-            return (T) new TaskViewModel(taskRepository, Clock.systemDefaultZone());
+            return (T) new TaskViewModel(taskRepository, Clock.systemDefaultZone(), new Handler(Looper.getMainLooper()));
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

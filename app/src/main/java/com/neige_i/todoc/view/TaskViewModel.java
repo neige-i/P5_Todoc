@@ -2,7 +2,6 @@ package com.neige_i.todoc.view;
 
 import android.content.res.ColorStateList;
 import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,12 +44,15 @@ public class TaskViewModel extends ViewModel {
     private final TaskRepository taskRepository;
     @NonNull
     private final Clock clock;
+    @NonNull
+    final Handler handler;
 
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
-    public TaskViewModel(@NonNull TaskRepository taskRepository, @NonNull Clock clock) {
+    public TaskViewModel(@NonNull TaskRepository taskRepository, @NonNull Clock clock, @NonNull Handler handler) {
         this.taskRepository = taskRepository;
         this.clock = clock;
+        this.handler = handler;
         orderBy.setValue(OrderBy.NONE);
 
         final LiveData<List<Task>> tasksLiveData = Transformations.switchMap(orderBy, orderBy -> {
@@ -162,7 +164,7 @@ public class TaskViewModel extends ViewModel {
             // Background work here: query project from database
             final Project project = taskRepository.getProjectById(projectId);
 
-            new Handler(Looper.getMainLooper()).post(() -> {
+            handler.post(() -> {
                 // UI thread work here: return SQL query result to main thread
                 callback.getProject(project);
             });
@@ -171,7 +173,7 @@ public class TaskViewModel extends ViewModel {
 
     // ------------------------------------ CALLBACK INTERFACE -------------------------------------
 
-    public interface Callback {
+    interface Callback {
         void getProject(@Nullable Project project);
     }
 
