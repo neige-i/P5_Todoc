@@ -2,6 +2,7 @@ package com.neige_i.todoc.view;
 
 import android.content.res.ColorStateList;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
 public class TaskUiModel {
@@ -13,12 +14,12 @@ public class TaskUiModel {
     private final String taskName;
     @NonNull
     private final String projectName;
-    @NonNull
-    private final ColorStateList projectColor;
+    @ColorInt
+    private final int projectColor;
 
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
-    public TaskUiModel(long taskId, @NonNull String taskName, @NonNull String projectName, @NonNull ColorStateList projectColor) {
+    public TaskUiModel(long taskId, @NonNull String taskName, @NonNull String projectName, @ColorInt int projectColor) {
         this.taskId = taskId;
         this.taskName = taskName;
         this.projectName = projectName;
@@ -39,8 +40,8 @@ public class TaskUiModel {
         return projectName;
     }
 
-    @NonNull
-    public ColorStateList getProjectColor() {
+    @ColorInt
+    public int getProjectColor() {
         return projectColor;
     }
 
@@ -54,6 +55,6 @@ public class TaskUiModel {
         return taskId == that.taskId &&
             taskName.equals(that.taskName) &&
             projectName.equals(that.projectName) &&
-            projectColor.equals(that.projectColor);
+            projectColor == that.projectColor;
     }
 }

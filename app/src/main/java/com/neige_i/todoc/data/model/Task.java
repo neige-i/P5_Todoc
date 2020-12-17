@@ -108,4 +108,14 @@ public class Task {
     public int hashCode() {
         return Objects.hash(id, projectId, name, creationTimestamp);
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+            "id=" + id +
+            ", projectId=" + projectId +
+            ", name='" + name + '\'' +
+            ", creationTimestamp=" + creationTimestamp +
+            '}';
+    }
 }

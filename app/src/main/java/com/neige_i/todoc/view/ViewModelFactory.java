@@ -1,41 +1,47 @@
 package com.neige_i.todoc.view;
 
-import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.neige_i.todoc.MainApplication;
+import com.neige_i.todoc.data.database.TaskDatabase;
 import com.neige_i.todoc.data.repository.TaskRepository;
+import com.neige_i.todoc.view.add_task.AddTaskViewModel;
 
 import java.time.Clock;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class TaskViewModelFactory implements ViewModelProvider.Factory {
+public class ViewModelFactory implements ViewModelProvider.Factory {
 
     // -------------------------------------  CLASS VARIABLES --------------------------------------
 
     @Nullable
-    private static TaskViewModelFactory factory;
+    private static ViewModelFactory factory;
 
     private final TaskRepository taskRepository;
 
     // ---------------------------------------- CONSTRUCTOR ----------------------------------------
 
-    private TaskViewModelFactory(TaskRepository taskRepository) {
+    private ViewModelFactory(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
     // -------------------------------------- FACTORY METHODS --------------------------------------
 
     @NonNull
-    public static TaskViewModelFactory getInstance(@NonNull Application application) {
+    public static ViewModelFactory getInstance() {
         if (factory == null) {
-            synchronized (TaskViewModelFactory.class) {
+            synchronized (ViewModelFactory.class) {
                 if (factory == null) {
-                    factory = new TaskViewModelFactory(new TaskRepository(application));
+                    factory = new ViewModelFactory(
+                        new TaskRepository(
+                            TaskDatabase.getInstance(MainApplication.getInstance()).taskDao(),
+                            Executors.newSingleThreadExecutor()
+                        )
+                    );
                 }
             }
         }
@@ -49,7 +55,9 @@ public class TaskViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(TaskViewModel.class)) {
-            return (T) new TaskViewModel(taskRepository, Clock.systemDefaultZone(), new Handler(Looper.getMainLooper()));
+            return (T) new TaskViewModel(taskRepository);
+        } else if (modelClass.isAssignableFrom(AddTaskViewModel.class)) {
+            return (T) new AddTaskViewModel(taskRepository, Clock.systemDefaultZone());
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

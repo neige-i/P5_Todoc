@@ -1,5 +1,6 @@
 package com.neige_i.todoc.view;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class TaskAdapter extends ListAdapter<TaskUiModel, TaskAdapter.TaskViewHo
         holder.imgDelete.setTag(taskUiModel.getTaskId());
         holder.lblTaskName.setText(taskUiModel.getTaskName());
         holder.lblProjectName.setText(taskUiModel.getProjectName());
-        holder.imgProject.setImageTintList(taskUiModel.getProjectColor());
+        holder.imgProject.setImageTintList(ColorStateList.valueOf(taskUiModel.getProjectColor()));
     }
 
     // ------------------------------------- VIEW HOLDER CLASS -------------------------------------
