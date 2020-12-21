@@ -11,7 +11,6 @@ import com.neige_i.todoc.data.repository.TaskRepository;
 import com.neige_i.todoc.view.add_task.AddTaskViewModel;
 
 import java.time.Clock;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
@@ -21,11 +20,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Nullable
     private static ViewModelFactory factory;
 
+    // ----------------------------------- INJECTED DEPENDENCIES -----------------------------------
+
+    @NonNull
     private final TaskRepository taskRepository;
 
     // ---------------------------------------- CONSTRUCTOR ----------------------------------------
 
-    private ViewModelFactory(TaskRepository taskRepository) {
+    private ViewModelFactory(@NonNull TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 

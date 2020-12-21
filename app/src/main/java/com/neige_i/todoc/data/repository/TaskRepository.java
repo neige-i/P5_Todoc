@@ -1,5 +1,6 @@
 package com.neige_i.todoc.data.repository;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.neige_i.todoc.data.database.TaskDao;
@@ -14,12 +15,14 @@ public class TaskRepository {
 
     // ------------------------------------ INSTANCE VARIABLES -------------------------------------
 
+    @NonNull
     private final TaskDao taskDao;
+    @NonNull
     private final ExecutorService executorService;
 
     // ---------------------------------------- CONSTRUCTOR ----------------------------------------
 
-    public TaskRepository(TaskDao taskDao, ExecutorService executorService) {
+    public TaskRepository(@NonNull TaskDao taskDao, @NonNull ExecutorService executorService) {
         this.taskDao = taskDao;
         this.executorService = executorService;
     }
@@ -54,7 +57,7 @@ public class TaskRepository {
         return taskDao.getTasksByDateDesc();
     }
 
-    public void addTask(Task taskToAdd) {
+    public void addTask(@NonNull Task taskToAdd) {
         TaskDatabase.databaseWriteExecutor.execute(() -> taskDao.insert(taskToAdd));
     }
 
@@ -68,7 +71,7 @@ public class TaskRepository {
         return taskDao.getAllProjects();
     }
 
-    public void getProjectById(long projectId, OnProjectQueriedCallback callback) {
+    public void getProjectById(long projectId, @NonNull OnProjectQueriedCallback callback) {
         executorService.execute(() -> {
             // Background work here: query project from database
             final Project project = taskDao.getProjectById(projectId);

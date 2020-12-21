@@ -1,24 +1,24 @@
 package com.neige_i.todoc.view;
 
-import com.neige_i.todoc.data.model.Project;
-
 import java.util.List;
 import java.util.Objects;
 
-public class MainUiModel {
+/**
+ * UI model to have only one UI state.<br />
+ * This allows {@link TaskViewModel} to return a unique UI state to {@link MainActivity}.
+ */
+public class ListUiModel {
 
     // ------------------------------------ INSTANCE VARIABLES -------------------------------------
 
     private final List<TaskUiModel> taskUiModels;
     private final boolean isNoTaskVisible;
-    private final List<Project> projectList;
 
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
-    public MainUiModel(List<TaskUiModel> taskUiModels, boolean isNoTaskVisible, List<Project> projectList) {
+    public ListUiModel(List<TaskUiModel> taskUiModels, boolean isNoTaskVisible) {
         this.taskUiModels = taskUiModels;
         this.isNoTaskVisible = isNoTaskVisible;
-        this.projectList = projectList;
     }
 
     public List<TaskUiModel> getTaskUiModels() {
@@ -29,22 +29,19 @@ public class MainUiModel {
         return isNoTaskVisible;
     }
 
-    public List<Project> getProjectList() {
-        return projectList;
-    }
+    // -------------------------------------- OBJECT METHODS ---------------------------------------
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MainUiModel that = (MainUiModel) o;
+        ListUiModel that = (ListUiModel) o;
         return isNoTaskVisible == that.isNoTaskVisible &&
-            Objects.equals(taskUiModels, that.taskUiModels) &&
-            Objects.equals(projectList, that.projectList);
+            Objects.equals(taskUiModels, that.taskUiModels);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taskUiModels, isNoTaskVisible, projectList);
+        return Objects.hash(taskUiModels, isNoTaskVisible);
     }
 }

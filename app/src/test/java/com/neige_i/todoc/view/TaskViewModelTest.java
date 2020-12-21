@@ -6,33 +6,28 @@ import androidx.lifecycle.MutableLiveData;
 import com.neige_i.todoc.data.model.Project;
 import com.neige_i.todoc.data.model.Task;
 import com.neige_i.todoc.data.repository.TaskRepository;
+import com.neige_i.todoc.util.DefaultProjects;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.neige_i.todoc.util.LiveDataTestUtil.awaitForValue;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_DESC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskViewModelTest {
-
-    private static final int PROJECTS_COUNT = 5;
 
     // ------------------------------------ TEST RULE VARIABLE -------------------------------------
 
@@ -45,25 +40,27 @@ public class TaskViewModelTest {
     private TaskViewModel taskViewModel;
 
     @Mock
-    private TaskRepository taskRepository;
+    private TaskRepository mockTaskRepository;
 
-    private MutableLiveData<List<Task>> tasksMutableLiveData;
-    private MutableLiveData<List<Task>> tasksByNameAscMutableLiveData;
-    private MutableLiveData<List<Project>> projectsMutableLiveData;
+    private final MutableLiveData<List<Task>> tasksMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Project>> projectsMutableLiveData = new MutableLiveData<>();
 
     // --------------------------------------- SETUP METHODS ---------------------------------------
 
     @Before
     public void setUp() {
-        tasksMutableLiveData = new MutableLiveData<>();
-        tasksByNameAscMutableLiveData = new MutableLiveData<>();
-        projectsMutableLiveData = new MutableLiveData<>();
+        // Init mock
+        doReturn(tasksMutableLiveData).when(mockTaskRepository).getTasks();
+        doReturn(tasksMutableLiveData).when(mockTaskRepository).getTasksByNameAsc();
+        doReturn(tasksMutableLiveData).when(mockTaskRepository).getTasksByNameDesc();
+        doReturn(tasksMutableLiveData).when(mockTaskRepository).getTasksByProjectNameAsc();
+        doReturn(tasksMutableLiveData).when(mockTaskRepository).getTasksByProjectNameDesc();
+        doReturn(tasksMutableLiveData).when(mockTaskRepository).getTasksByDateAsc();
+        doReturn(tasksMutableLiveData).when(mockTaskRepository).getTasksByDateDesc();
+        doReturn(projectsMutableLiveData).when(mockTaskRepository).getProjects();
 
-        Mockito.doReturn(tasksMutableLiveData).when(taskRepository).getTasks();
-        Mockito.doReturn(tasksByNameAscMutableLiveData).when(taskRepository).getTasksByNameAsc();
-        Mockito.doReturn(projectsMutableLiveData).when(taskRepository).getProjects();
-
-        taskViewModel = new TaskViewModel(taskRepository);
+        // Init ViewModel
+        taskViewModel = new TaskViewModel(mockTaskRepository);
     }
 
     // --------------------------------------- TEST METHODS ----------------------------------------
@@ -72,116 +69,105 @@ public class TaskViewModelTest {
     public void testDefaultSort() throws InterruptedException {
         // Given
         tasksMutableLiveData.setValue(new ArrayList<>());
-        projectsMutableLiveData.setValue(getDefaultProjectList());
+        projectsMutableLiveData.setValue(DefaultProjects.getList());
 
         // When
-        MainUiModel uiState = awaitForValue(taskViewModel.getUiState());
+        final ListUiModel uiState = awaitForValue(taskViewModel.getUiState());
 
         // Then
         // getProjects() is called inside ViewModel's constructor
-        verify(taskRepository).getProjects();
+        verify(mockTaskRepository).getProjects();
 
         // As OrderBy.NONE is set in the ViewModel's constructor, the default getTasks() method is also called
-        verify(taskRepository).getTasks();
+        verify(mockTaskRepository).getTasks();
 
         assertEquals(0, uiState.getTaskUiModels().size());
         assertTrue(uiState.isNoTaskVisible());
-        assertEquals(PROJECTS_COUNT, uiState.getProjectList().size());
     }
 
     @Test
     public void testSortByNameAsc() throws InterruptedException {
-        // Given
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(new Task(2, 1, "AZ", 777));
-        tasks.add(new Task(1, 1, "ZA", 777));
+        testSorting(TaskViewModel.OrderBy.TASK_NAME_ASC);
+    }
 
-        tasksByNameAscMutableLiveData.setValue(tasks);
-        projectsMutableLiveData.setValue(getDefaultProjectList());
+    @Test
+    public void testSortByNameDesc() throws InterruptedException {
+        testSorting(TaskViewModel.OrderBy.TASK_NAME_DESC);
+    }
 
+    @Test
+    public void testSortByProjectNameAsc() throws InterruptedException {
+        testSorting(TaskViewModel.OrderBy.PROJECT_NAME_ASC);
+    }
+
+    @Test
+    public void testSortByProjectNameDesc() throws InterruptedException {
+        testSorting(TaskViewModel.OrderBy.PROJECT_NAME_DESC);
+    }
+
+    @Test
+    public void testSortByDateAsc() throws InterruptedException {
+        testSorting(TaskViewModel.OrderBy.DATE_ASC);
+    }
+
+    @Test
+    public void testSortByDateDesc() throws InterruptedException {
+        testSorting(TaskViewModel.OrderBy.DATE_DESC);
+    }
+
+    @Test
+    public void testRemoveTask() {
         // When
-        taskViewModel.setSortType(TaskViewModel.OrderBy.TASK_NAME_ASC);
-        MainUiModel uiState = awaitForValue(taskViewModel.getUiState());
+        taskViewModel.onTaskRemoved(1);
 
         // Then
-        // getProjects() is called inside ViewModel's constructor
-        verify(taskRepository).getProjects();
+        verify(mockTaskRepository).getProjects();
+        verify(mockTaskRepository).deleteTask(1);
+    }
 
-        // As OrderBy.NONE is set in the ViewModel's constructor, the default getTasks() method is also called
-        verify(taskRepository).getTasksByNameAsc();
+    // --------------------------------------- UTIL METHODS ----------------------------------------
+
+    private List<Task> getDefaultTaskList() {
+        return Arrays.asList(new Task(2, 1, "AZ", 777), new Task(1, 1, "ZA", 777));
+    }
+
+    private void testSorting(TaskViewModel.OrderBy orderBy) throws InterruptedException {
+        // Given
+        tasksMutableLiveData.setValue(getDefaultTaskList());
+        projectsMutableLiveData.setValue(DefaultProjects.getList());
+
+        // When
+        taskViewModel.onSortingSelected(orderBy);
+        final ListUiModel uiState = awaitForValue(taskViewModel.getUiState());
+
+        // Then
+        verify(mockTaskRepository).getProjects();
+        verifyRepositoryMethodCall(orderBy);
 
         assertEquals(2, uiState.getTaskUiModels().size());
         assertFalse(uiState.isNoTaskVisible());
-        assertEquals(PROJECTS_COUNT, uiState.getProjectList().size());
     }
 
-//    @Test
-//    public void testSortByNameDesc() throws InterruptedException {
-//        // When: sort tasks by their name in descending order
-//        taskViewModel.setSortType(TASK_NAME_DESC);
-//        awaitForValue(taskViewModel.getUiState());
-//
-//        // Then: the appropriate repository method is called
-//        verify(taskRepository).getTasksByNameDesc();
-//    }
-//
-//    @Test
-//    public void testSortByProjectNameAsc() throws InterruptedException {
-//        // When: sort tasks by their project's name in ascending order
-//        taskViewModel.setSortType(PROJECT_NAME_ASC);
-//        awaitForValue(taskViewModel.getUiState());
-//
-//        // Then: the appropriate repository method is called
-//        verify(taskRepository).getTasksByProjectNameAsc();
-//    }
-//
-//    @Test
-//    public void testSortByProjectNameDesc() throws InterruptedException {
-//        // When: sort tasks by their project name in descending order
-//        taskViewModel.setSortType(PROJECT_NAME_DESC);
-//        awaitForValue(taskViewModel.getUiState());
-//
-//        // Then: the appropriate repository method is called
-//        verify(taskRepository).getTasksByProjectNameDesc();
-//    }
-//
-//    @Test
-//    public void testSortByDateAsc() throws InterruptedException {
-//        // When: sort tasks by their date in ascending order
-//        taskViewModel.setSortType(DATE_ASC);
-//        awaitForValue(taskViewModel.getUiState());
-//
-//        // Then: the appropriate repository method is called
-//        verify(taskRepository).getTasksByDateAsc();
-//    }
-//
-//    @Test
-//    public void testSortByDateDesc() throws InterruptedException {
-//        // When: sort tasks by their date in descending order
-//        taskViewModel.setSortType(DATE_DESC);
-//        awaitForValue(taskViewModel.getUiState());
-//
-//        // Then: the appropriate repository method is called
-//        verify(taskRepository).getTasksByDateDesc();
-//    }
-//
-//    @Test
-//    public void testRemoveTask() throws InterruptedException {
-//        // When: remove the task with ID 3L
-//        taskViewModel.removeTask(3L);
-//        awaitForValue(taskViewModel.getUiState());
-//
-//        // Then: the appropriate repository method is called with the correct argument
-//        verify(taskRepository).deleteTask(3L);
-//    }
-
-    private List<Project> getDefaultProjectList() {
-        List<Project> projects = new ArrayList<>();
-
-        for (int i = 0; i < PROJECTS_COUNT; i++) {
-            projects.add(new Project(i, "Project " + i, i));
+    private void verifyRepositoryMethodCall(TaskViewModel.OrderBy orderBy) {
+        switch (orderBy) {
+            case TASK_NAME_ASC:
+                verify(mockTaskRepository).getTasksByNameAsc();
+                break;
+            case TASK_NAME_DESC:
+                verify(mockTaskRepository).getTasksByNameDesc();
+                break;
+            case PROJECT_NAME_ASC:
+                verify(mockTaskRepository).getTasksByProjectNameAsc();
+                break;
+            case PROJECT_NAME_DESC:
+                verify(mockTaskRepository).getTasksByProjectNameDesc();
+                break;
+            case DATE_ASC:
+                verify(mockTaskRepository).getTasksByDateAsc();
+                break;
+            case DATE_DESC:
+                verify(mockTaskRepository).getTasksByDateDesc();
+                break;
         }
-
-        return projects;
     }
 }

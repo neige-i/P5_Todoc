@@ -1,7 +1,5 @@
 package com.neige_i.todoc.view;
 
-import android.content.res.ColorStateList;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 

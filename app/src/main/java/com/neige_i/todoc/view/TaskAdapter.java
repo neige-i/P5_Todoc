@@ -19,13 +19,13 @@ public class TaskAdapter extends ListAdapter<TaskUiModel, TaskAdapter.TaskViewHo
     // ------------------------------------  CALLBACK VARIABLES ------------------------------------
 
     @NonNull
-    private final DeleteTaskListener deleteTaskListener;
+    private final OnTaskDeletedCallback onTaskDeletedCallback;
 
     // ---------------------------------------- CONSTRUCTOR ----------------------------------------
 
-    protected TaskAdapter(@NonNull DeleteTaskListener deleteTaskListener) {
+    protected TaskAdapter(@NonNull OnTaskDeletedCallback onTaskDeletedCallback) {
         super(new TaskDiffCallback());
-        this.deleteTaskListener = deleteTaskListener;
+        this.onTaskDeletedCallback = onTaskDeletedCallback;
     }
 
     // -------------------------------------- ADAPTER METHODS --------------------------------------
@@ -37,7 +37,7 @@ public class TaskAdapter extends ListAdapter<TaskUiModel, TaskAdapter.TaskViewHo
             R.layout.item_task,
             parent,
             false
-        ), deleteTaskListener);
+        ), onTaskDeletedCallback);
     }
 
     @Override
@@ -52,27 +52,25 @@ public class TaskAdapter extends ListAdapter<TaskUiModel, TaskAdapter.TaskViewHo
     // ------------------------------------- VIEW HOLDER CLASS -------------------------------------
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
+
         /**
          * The circle icon showing the color of the project
          */
         private final AppCompatImageView imgProject;
-
         /**
          * The TextView displaying the name of the task
          */
         private final TextView lblTaskName;
-
         /**
          * The TextView displaying the name of the project
          */
         private final TextView lblProjectName;
-
         /**
          * The delete icon
          */
         private final AppCompatImageView imgDelete;
 
-        public TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener) {
+        public TaskViewHolder(@NonNull View itemView, @NonNull OnTaskDeletedCallback onTaskDeletedCallback) {
             super(itemView);
 
             imgProject = itemView.findViewById(R.id.img_project);
@@ -80,7 +78,7 @@ public class TaskAdapter extends ListAdapter<TaskUiModel, TaskAdapter.TaskViewHo
             lblProjectName = itemView.findViewById(R.id.lbl_project_name);
             imgDelete = itemView.findViewById(R.id.img_delete);
 
-            imgDelete.setOnClickListener(view -> deleteTaskListener.onDeleteTask((long) view.getTag()));
+            imgDelete.setOnClickListener(view -> onTaskDeletedCallback.onTaskDeleted((long) view.getTag()));
         }
     }
 
@@ -104,10 +102,10 @@ public class TaskAdapter extends ListAdapter<TaskUiModel, TaskAdapter.TaskViewHo
     /**
      * Listener for deleting tasks.
      */
-    interface DeleteTaskListener {
+    interface OnTaskDeletedCallback {
         /**
          * Called when a task needs to be deleted.
          */
-        void onDeleteTask(long taskId);
+        void onTaskDeleted(long taskId);
     }
 }

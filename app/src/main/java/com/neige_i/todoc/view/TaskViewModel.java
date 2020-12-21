@@ -1,7 +1,5 @@
 package com.neige_i.todoc.view;
 
-import android.content.res.ColorStateList;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -17,26 +15,38 @@ import com.neige_i.todoc.data.repository.TaskRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This {@link ViewModel} handles:
+ * <ul>
+ *     <li>when the 'empty state' text is displayed</li>
+ *     <li>which task list to query according to the selected sorting</li>
+ * </ul>
+ */
 public class TaskViewModel extends ViewModel {
 
-    // ------------------------------------ LIVE DATA VARIABLES ------------------------------------
-
-    @NonNull
-    private final MutableLiveData<OrderBy> orderBy = new MutableLiveData<>();
-    @NonNull
-    private final MediatorLiveData<MainUiModel> mainUiModelMediatorLiveData = new MediatorLiveData<>();
-
-    // -------------------------------------- LOCAL VARIABLES --------------------------------------
+    // ----------------------------------- INJECTED DEPENDENCIES -----------------------------------
 
     @NonNull
     private final TaskRepository taskRepository;
 
+    // -------------------------------------- STATE LIVE DATA --------------------------------------
+
+    @NonNull
+    private final MediatorLiveData<ListUiModel> listUiModelMediatorLiveData = new MediatorLiveData<>();
+
+    // -------------------------------------- LOCAL VARIABLES --------------------------------------
+
+    @NonNull
+    private final MutableLiveData<OrderBy> orderBy = new MutableLiveData<>();
+
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
     public TaskViewModel(@NonNull TaskRepository taskRepository) {
+        // Init ViewModel: set repository and default order
         this.taskRepository = taskRepository;
         orderBy.setValue(OrderBy.NONE);
 
+        // Retrieve tasks and projects from the repository
         final LiveData<List<Task>> tasksLiveData = Transformations.switchMap(orderBy, orderBy -> {
             switch (orderBy) {
                 case TASK_NAME_ASC:
@@ -58,16 +68,19 @@ public class TaskViewModel extends ViewModel {
 
         final LiveData<List<Project>> projectsLiveData = taskRepository.getProjects();
 
-        mainUiModelMediatorLiveData.addSource(tasksLiveData, tasks -> combine(tasks, projectsLiveData.getValue()));
-
-        mainUiModelMediatorLiveData.addSource(projectsLiveData, projects -> combine(tasksLiveData.getValue(), projects));
+        // Update UI model when tasks and projects are updated
+        listUiModelMediatorLiveData.addSource(tasksLiveData, tasks -> combine(tasks, projectsLiveData.getValue()));
+        listUiModelMediatorLiveData.addSource(projectsLiveData, projects -> combine(tasksLiveData.getValue(), projects));
     }
 
-    public LiveData<MainUiModel> getUiState() {
-        return mainUiModelMediatorLiveData;
+    public LiveData<ListUiModel> getUiState() {
+        return listUiModelMediatorLiveData;
     }
+
+    // ------------------------------------- UI MODEL METHODS --------------------------------------
 
     private void combine(@Nullable List<Task> tasks, @Nullable List<Project> projects) {
+        // Update UI model only if both tasks and projects are not null
         if (tasks == null || projects == null) {
             return;
         }
@@ -91,16 +104,16 @@ public class TaskViewModel extends ViewModel {
             }
         }
 
-        mainUiModelMediatorLiveData.setValue(new MainUiModel(taskUiModels, taskUiModels.isEmpty(), projects));
+        listUiModelMediatorLiveData.setValue(new ListUiModel(taskUiModels, taskUiModels.isEmpty()));
     }
 
     // --------------------------------------- TASK METHODS ----------------------------------------
 
-    public void removeTask(long taskId) {
+    public void onTaskRemoved(long taskId) {
         taskRepository.deleteTask(taskId);
     }
 
-    public void setSortType(OrderBy orderBy) {
+    public void onSortingSelected(@NonNull OrderBy orderBy) {
         this.orderBy.setValue(orderBy);
     }
 

@@ -6,12 +6,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
+/**
+ * Allows executing unit tests synchronously on a single thread.
+ */
 public class SynchronousExecutorService implements ExecutorService {
 
     private boolean shutdown;
@@ -67,24 +68,24 @@ public class SynchronousExecutorService implements ExecutorService {
 
     @NonNull
     @Override
-    public <T> List<Future<T>> invokeAll(@NonNull Collection<? extends Callable<T>> tasks) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(@NonNull Collection<? extends Callable<T>> tasks) {
         throw new IllegalStateException("Not supported !");
     }
 
     @NonNull
     @Override
-    public <T> List<Future<T>> invokeAll(@NonNull Collection<? extends Callable<T>> tasks, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(@NonNull Collection<? extends Callable<T>> tasks, long timeout, @NonNull TimeUnit unit) {
         throw new IllegalStateException("Not supported !");
     }
 
     @NonNull
     @Override
-    public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> tasks) throws ExecutionException, InterruptedException {
+    public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> tasks) {
         throw new IllegalStateException("Not supported !");
     }
 
     @Override
-    public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> tasks, long timeout, @NonNull TimeUnit unit) throws ExecutionException, InterruptedException, TimeoutException {
+    public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> tasks, long timeout, @NonNull TimeUnit unit) {
         throw new IllegalStateException("Not supported !");
     }
 }

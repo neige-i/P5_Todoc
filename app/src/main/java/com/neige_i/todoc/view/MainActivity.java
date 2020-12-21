@@ -1,6 +1,5 @@
 package com.neige_i.todoc.view;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,11 +21,20 @@ import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_DESC;
 import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_ASC;
 import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_DESC;
 
+/**
+ * This {@link AppCompatActivity Activity} displays:
+ * <ul>
+ *     <li>a list of tasks (or an 'empty state' text if no task is stored in the database)</li>
+ *     <li>a button to add a new task</li>
+ *     <li>a menu item to sort the tasks</li>
+ * </ul>
+ *
+ */
 public class MainActivity extends AppCompatActivity {
 
     // ---------------------------------------- VIEW MODEL -----------------------------------------
 
-    private TaskViewModel viewModel; // ASKME: passing parameters between methods, retrieve project list
+    private TaskViewModel viewModel;
 
     // ------------------------------------- ACTIVITY METHODS --------------------------------------
 
@@ -41,7 +49,19 @@ public class MainActivity extends AppCompatActivity {
         // Init ViewModel
         viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(TaskViewModel.class);
 
-        initUi();
+        // Init UI components
+        final TaskAdapter taskAdapter = new TaskAdapter(viewModel::onTaskRemoved);
+        ((RecyclerView) findViewById(R.id.list_task)).setAdapter(taskAdapter);
+        final TextView noTaskLbl = findViewById(R.id.lbl_no_task);
+        findViewById(R.id.fab_add_task).setOnClickListener(v ->
+            new AddTaskDialogFragment().show(getSupportFragmentManager(), null)
+        );
+
+        // Update UI when state is changed
+        viewModel.getUiState().observe(this, mainUiModel -> {
+            taskAdapter.submitList(mainUiModel.getTaskUiModels());
+            noTaskLbl.setVisibility(mainUiModel.isNoTaskVisible() ? View.VISIBLE : View.GONE);
+        });
     }
 
     @Override
@@ -55,43 +75,25 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.filter_alphabetical_task) {
-            viewModel.setSortType(TASK_NAME_ASC);
+            viewModel.onSortingSelected(TASK_NAME_ASC);
             return true;
         } else if (id == R.id.filter_alphabetical_inverted_task) {
-            viewModel.setSortType(TASK_NAME_DESC);
+            viewModel.onSortingSelected(TASK_NAME_DESC);
             return true;
         } else if (id == R.id.filter_alphabetical_project) {
-            viewModel.setSortType(PROJECT_NAME_ASC);
+            viewModel.onSortingSelected(PROJECT_NAME_ASC);
             return true;
         } else if (id == R.id.filter_alphabetical_inverted_project) {
-            viewModel.setSortType(PROJECT_NAME_DESC);
+            viewModel.onSortingSelected(PROJECT_NAME_DESC);
             return true;
         } else if (id == R.id.filter_oldest_first) {
-            viewModel.setSortType(DATE_ASC);
+            viewModel.onSortingSelected(DATE_ASC);
             return true;
         } else if (id == R.id.filter_recent_first) {
-            viewModel.setSortType(DATE_DESC);
+            viewModel.onSortingSelected(DATE_DESC);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
-    }
-
-    // ---------------------------------------- UI METHODS -----------------------------------------
-
-    private void initUi() {
-        final TaskAdapter taskAdapter = new TaskAdapter(viewModel::removeTask);
-        ((RecyclerView) findViewById(R.id.list_task)).setAdapter(taskAdapter);
-        final TextView noTaskLbl = findViewById(R.id.lbl_no_task);
-
-        findViewById(R.id.fab_add_task).setOnClickListener(v ->
-            new AddTaskDialogFragment().show(getSupportFragmentManager(), null)
-        );
-
-        // Update UI when state is changed
-        viewModel.getUiState().observe(this, mainUiModel -> {
-            taskAdapter.submitList(mainUiModel.getTaskUiModels());
-            noTaskLbl.setVisibility(mainUiModel.isNoTaskVisible() ? View.VISIBLE : View.GONE);
-        });
     }
 }
