@@ -1,4 +1,4 @@
-package com.neige_i.todoc.view;
+package com.neige_i.todoc.view.list_task;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;

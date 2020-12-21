@@ -9,6 +9,7 @@ import com.neige_i.todoc.MainApplication;
 import com.neige_i.todoc.data.database.TaskDatabase;
 import com.neige_i.todoc.data.repository.TaskRepository;
 import com.neige_i.todoc.view.add_task.AddTaskViewModel;
+import com.neige_i.todoc.view.list_task.ListViewModel;
 
 import java.time.Clock;
 import java.util.concurrent.Executors;
@@ -56,8 +57,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(TaskViewModel.class)) {
-            return (T) new TaskViewModel(taskRepository);
+        if (modelClass.isAssignableFrom(ListViewModel.class)) {
+            return (T) new ListViewModel(taskRepository);
         } else if (modelClass.isAssignableFrom(AddTaskViewModel.class)) {
             return (T) new AddTaskViewModel(taskRepository, Clock.systemDefaultZone());
         }

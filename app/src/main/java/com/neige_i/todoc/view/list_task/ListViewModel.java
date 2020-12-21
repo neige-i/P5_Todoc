@@ -1,4 +1,4 @@
-package com.neige_i.todoc.view;
+package com.neige_i.todoc.view.list_task;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +22,7 @@ import java.util.List;
  *     <li>which task list to query according to the selected sorting</li>
  * </ul>
  */
-public class TaskViewModel extends ViewModel {
+public class ListViewModel extends ViewModel {
 
     // ----------------------------------- INJECTED DEPENDENCIES -----------------------------------
 
@@ -32,7 +32,7 @@ public class TaskViewModel extends ViewModel {
     // -------------------------------------- STATE LIVE DATA --------------------------------------
 
     @NonNull
-    private final MediatorLiveData<ListUiModel> listUiModelMediatorLiveData = new MediatorLiveData<>();
+    private final MediatorLiveData<ListUiModel> uiState = new MediatorLiveData<>();
 
     // -------------------------------------- LOCAL VARIABLES --------------------------------------
 
@@ -41,7 +41,7 @@ public class TaskViewModel extends ViewModel {
 
     // ----------------------------------- CONSTRUCTOR & GETTERS -----------------------------------
 
-    public TaskViewModel(@NonNull TaskRepository taskRepository) {
+    public ListViewModel(@NonNull TaskRepository taskRepository) {
         // Init ViewModel: set repository and default order
         this.taskRepository = taskRepository;
         orderBy.setValue(OrderBy.NONE);
@@ -69,12 +69,12 @@ public class TaskViewModel extends ViewModel {
         final LiveData<List<Project>> projectsLiveData = taskRepository.getProjects();
 
         // Update UI model when tasks and projects are updated
-        listUiModelMediatorLiveData.addSource(tasksLiveData, tasks -> combine(tasks, projectsLiveData.getValue()));
-        listUiModelMediatorLiveData.addSource(projectsLiveData, projects -> combine(tasksLiveData.getValue(), projects));
+        uiState.addSource(tasksLiveData, tasks -> combine(tasks, projectsLiveData.getValue()));
+        uiState.addSource(projectsLiveData, projects -> combine(tasksLiveData.getValue(), projects));
     }
 
     public LiveData<ListUiModel> getUiState() {
-        return listUiModelMediatorLiveData;
+        return uiState;
     }
 
     // ------------------------------------- UI MODEL METHODS --------------------------------------
@@ -104,7 +104,7 @@ public class TaskViewModel extends ViewModel {
             }
         }
 
-        listUiModelMediatorLiveData.setValue(new ListUiModel(taskUiModels, taskUiModels.isEmpty()));
+        uiState.setValue(new ListUiModel(taskUiModels, taskUiModels.isEmpty()));
     }
 
     // --------------------------------------- TASK METHODS ----------------------------------------

@@ -1,4 +1,4 @@
-package com.neige_i.todoc.view;
+package com.neige_i.todoc.view.list_task;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.ViewAssertion;
@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.neige_i.todoc.R;
 import com.neige_i.todoc.util.RecyclerViewMatcher;
+import com.neige_i.todoc.view.list_task.ListActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,12 +33,12 @@ import static org.junit.Assert.assertThat;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class MainActivityInstrumentedTest {
+public class ListActivityInstrumentedTest {
 
     // ---------------------------------- ACTIVITY RULE VARIABLE -----------------------------------
 
     @Rule
-    public ActivityScenarioRule<MainActivity> rule = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<ListActivity> rule = new ActivityScenarioRule<>(ListActivity.class);
 
     // --------------------------------------- TEST METHODS ----------------------------------------
 

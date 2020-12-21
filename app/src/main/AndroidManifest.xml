@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Todoc"
         tools:ignore="AllowBackup"
         >
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.list_task.ListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

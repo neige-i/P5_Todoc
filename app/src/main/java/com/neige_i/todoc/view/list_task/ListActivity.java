@@ -1,4 +1,4 @@
-package com.neige_i.todoc.view;
+package com.neige_i.todoc.view.list_task;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,14 +12,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.neige_i.todoc.R;
+import com.neige_i.todoc.view.ViewModelFactory;
 import com.neige_i.todoc.view.add_task.AddTaskDialogFragment;
 
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.DATE_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.PROJECT_NAME_DESC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_ASC;
-import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_DESC;
+import static com.neige_i.todoc.view.list_task.ListViewModel.OrderBy.DATE_ASC;
+import static com.neige_i.todoc.view.list_task.ListViewModel.OrderBy.DATE_DESC;
+import static com.neige_i.todoc.view.list_task.ListViewModel.OrderBy.PROJECT_NAME_ASC;
+import static com.neige_i.todoc.view.list_task.ListViewModel.OrderBy.PROJECT_NAME_DESC;
+import static com.neige_i.todoc.view.list_task.ListViewModel.OrderBy.TASK_NAME_ASC;
+import static com.neige_i.todoc.view.list_task.ListViewModel.OrderBy.TASK_NAME_DESC;
 
 /**
  * This {@link AppCompatActivity Activity} displays:
@@ -30,11 +31,11 @@ import static com.neige_i.todoc.view.TaskViewModel.OrderBy.TASK_NAME_DESC;
  * </ul>
  *
  */
-public class MainActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity {
 
     // ---------------------------------------- VIEW MODEL -----------------------------------------
 
-    private TaskViewModel viewModel;
+    private ListViewModel viewModel;
 
     // ------------------------------------- ACTIVITY METHODS --------------------------------------
 
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
 
         // Init ViewModel
-        viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(TaskViewModel.class);
+        viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ListViewModel.class);
 
         // Init UI components
         final TaskAdapter taskAdapter = new TaskAdapter(viewModel::onTaskRemoved);

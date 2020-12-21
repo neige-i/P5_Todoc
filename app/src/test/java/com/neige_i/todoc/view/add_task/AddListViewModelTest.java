@@ -37,7 +37,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AddTaskViewModelTest {
+public class AddListViewModelTest {
 
     // ------------------------------------ TEST RULE VARIABLE -------------------------------------
 

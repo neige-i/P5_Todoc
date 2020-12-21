@@ -1,4 +1,4 @@
-package com.neige_i.todoc.view;
+package com.neige_i.todoc.view.list_task;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
@@ -7,6 +7,8 @@ import com.neige_i.todoc.data.model.Project;
 import com.neige_i.todoc.data.model.Task;
 import com.neige_i.todoc.data.repository.TaskRepository;
 import com.neige_i.todoc.util.DefaultProjects;
+import com.neige_i.todoc.view.list_task.ListUiModel;
+import com.neige_i.todoc.view.list_task.ListViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -27,7 +29,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TaskViewModelTest {
+public class ListViewModelTest {
 
     // ------------------------------------ TEST RULE VARIABLE -------------------------------------
 
@@ -37,7 +39,7 @@ public class TaskViewModelTest {
 
     // ------------------------------------- OBJECT UNDER TEST -------------------------------------
 
-    private TaskViewModel taskViewModel;
+    private ListViewModel listViewModel;
 
     @Mock
     private TaskRepository mockTaskRepository;
@@ -60,7 +62,7 @@ public class TaskViewModelTest {
         doReturn(projectsMutableLiveData).when(mockTaskRepository).getProjects();
 
         // Init ViewModel
-        taskViewModel = new TaskViewModel(mockTaskRepository);
+        listViewModel = new ListViewModel(mockTaskRepository);
     }
 
     // --------------------------------------- TEST METHODS ----------------------------------------
@@ -72,7 +74,7 @@ public class TaskViewModelTest {
         projectsMutableLiveData.setValue(DefaultProjects.getList());
 
         // When
-        final ListUiModel uiState = awaitForValue(taskViewModel.getUiState());
+        final ListUiModel uiState = awaitForValue(listViewModel.getUiState());
 
         // Then
         // getProjects() is called inside ViewModel's constructor
@@ -87,38 +89,38 @@ public class TaskViewModelTest {
 
     @Test
     public void testSortByNameAsc() throws InterruptedException {
-        testSorting(TaskViewModel.OrderBy.TASK_NAME_ASC);
+        testSorting(ListViewModel.OrderBy.TASK_NAME_ASC);
     }
 
     @Test
     public void testSortByNameDesc() throws InterruptedException {
-        testSorting(TaskViewModel.OrderBy.TASK_NAME_DESC);
+        testSorting(ListViewModel.OrderBy.TASK_NAME_DESC);
     }
 
     @Test
     public void testSortByProjectNameAsc() throws InterruptedException {
-        testSorting(TaskViewModel.OrderBy.PROJECT_NAME_ASC);
+        testSorting(ListViewModel.OrderBy.PROJECT_NAME_ASC);
     }
 
     @Test
     public void testSortByProjectNameDesc() throws InterruptedException {
-        testSorting(TaskViewModel.OrderBy.PROJECT_NAME_DESC);
+        testSorting(ListViewModel.OrderBy.PROJECT_NAME_DESC);
     }
 
     @Test
     public void testSortByDateAsc() throws InterruptedException {
-        testSorting(TaskViewModel.OrderBy.DATE_ASC);
+        testSorting(ListViewModel.OrderBy.DATE_ASC);
     }
 
     @Test
     public void testSortByDateDesc() throws InterruptedException {
-        testSorting(TaskViewModel.OrderBy.DATE_DESC);
+        testSorting(ListViewModel.OrderBy.DATE_DESC);
     }
 
     @Test
     public void testRemoveTask() {
         // When
-        taskViewModel.onTaskRemoved(1);
+        listViewModel.onTaskRemoved(1);
 
         // Then
         verify(mockTaskRepository).getProjects();
@@ -131,14 +133,14 @@ public class TaskViewModelTest {
         return Arrays.asList(new Task(2, 1, "AZ", 777), new Task(1, 1, "ZA", 777));
     }
 
-    private void testSorting(TaskViewModel.OrderBy orderBy) throws InterruptedException {
+    private void testSorting(ListViewModel.OrderBy orderBy) throws InterruptedException {
         // Given
         tasksMutableLiveData.setValue(getDefaultTaskList());
         projectsMutableLiveData.setValue(DefaultProjects.getList());
 
         // When
-        taskViewModel.onSortingSelected(orderBy);
-        final ListUiModel uiState = awaitForValue(taskViewModel.getUiState());
+        listViewModel.onSortingSelected(orderBy);
+        final ListUiModel uiState = awaitForValue(listViewModel.getUiState());
 
         // Then
         verify(mockTaskRepository).getProjects();
@@ -148,7 +150,7 @@ public class TaskViewModelTest {
         assertFalse(uiState.isNoTaskVisible());
     }
 
-    private void verifyRepositoryMethodCall(TaskViewModel.OrderBy orderBy) {
+    private void verifyRepositoryMethodCall(ListViewModel.OrderBy orderBy) {
         switch (orderBy) {
             case TASK_NAME_ASC:
                 verify(mockTaskRepository).getTasksByNameAsc();

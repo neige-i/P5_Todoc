@@ -1,4 +1,4 @@
-package com.neige_i.todoc.view;
+package com.neige_i.todoc.view.list_task;
 
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;

@@ -1,11 +1,11 @@
-package com.neige_i.todoc.view;
+package com.neige_i.todoc.view.list_task;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
  * UI model to have only one UI state.<br />
- * This allows {@link TaskViewModel} to return a unique UI state to {@link MainActivity}.
+ * This allows {@link ListViewModel} to return a unique UI state to {@link ListActivity}.
  */
 public class ListUiModel {
 
